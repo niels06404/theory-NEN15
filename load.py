@@ -6,13 +6,12 @@ def load_stations(input_file):
         # Skip header line
         next(file)
         
-        stationlist = []
+        # Add station information to dictionary
+        stations = {}
         
         for line in file:
-            stationlist.append(line.strip().split(","))
-            
-        # Add station information to dictionary        
-        stations = {x[0]: Station(x[0], float(x[1]), float(x[2])) for x in stationlist}
+            x = line.strip().split(',')
+            stations[x[0]] = Station(x[0], float(x[1]), float(x[2]))
 
     return stations
 
@@ -22,12 +21,8 @@ def load_connections(input_file, stations):
         # Skip header line
         next(file)
         
-        connectionlist = []
-        
+        # Add connections to stations  
         for line in file:
-            connectionlist.append(line.strip().split(","))
-            
-        # Add connections to stations            
-        for x in connectionlist:
+            x = line.strip().split(',')
             stations[x[0]].add_connection(x[1], int(x[2]))
             stations[x[1]].add_connection(x[0], int(x[2]))
