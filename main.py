@@ -1,8 +1,8 @@
 from load import load_stations, load_connections
 
 
-stations = load_stations("inputFiles/StationsHolland.csv")
-load_connections("inputFiles/ConnectiesHolland.csv", stations)
+stations = load_stations("data/StationsHolland.csv")
+load_connections("data/ConnectiesHolland.csv", stations)
 
 # Test
 print(stations)
