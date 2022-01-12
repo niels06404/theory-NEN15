@@ -1,22 +1,48 @@
 from mpl_toolkits.basemap import Basemap
 import matplotlib.pyplot as plt
-
-m = Basemap(projection='mill',
-            llcrnrlat= 50,
-            llcrnrlon= 3,
-            urcrnrlat= 54,
-            urcrnrlon= 8)
-
-# m.drawcoastlines()
-# m.drawcountries()
-# m.fillcontinents()
-# m.bluemarble()
-m.shadedrelief()
+import pandas as pd
 
 
-Alat, Alon = 52.63777924, 4.739722252
-xpt, ypt = m(Alon, Alat)
-m.plot(xpt, ypt, "ro")
+### Nederland ###
+ned = Basemap(projection='mill',
+            llcrnrlat= 50.7,
+            llcrnrlon= 3.2,
+            urcrnrlat= 53.6,
+            urcrnrlon= 7.3,
+            resolution='h')
 
-plt.title('Basemap')
-plt.savefig('plot.png')
+ned.drawcoastlines(linewidth=0.5)
+ned.drawcountries()
+
+df = pd.read_csv("data/StationsNationaal.csv")
+x = list(df.x)
+y = list(df.y)
+
+for i in range(len(x)):
+    xpt, ypt = ned(y[i], x[i])
+    ned.plot(xpt, ypt, "ro", markersize=1)
+
+plt.title('Nederland Intercities')
+plt.savefig('plots/plot_res_h_N.png')
+
+### Holland ###
+# hol = Basemap(projection='mill',
+#             llcrnrlat= 51.7,
+#             llcrnrlon= 4,
+#             urcrnrlat= 53.1,
+#             urcrnrlon= 5.3,
+#             resolution='h')
+
+# hol.drawcoastlines(linewidth=0.5)
+# hol.drawcountries()
+
+# df = pd.read_csv("data/StationsHolland.csv")
+# x = list(df.x)
+# y = list(df.y)
+
+# for i in range(len(x)):
+#     xpt, ypt = hol(y[i], x[i])
+#     hol.plot(xpt, ypt, "ro", markersize=1.2)
+
+# plt.title('Holland Intercities')
+# plt.savefig('plots/plot_res_h_H.png')
