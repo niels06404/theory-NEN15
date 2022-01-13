@@ -24,5 +24,5 @@ def load_connections(input_file, stations):
         # Add connections to stations  
         for line in file:
             x = line.strip().split(',')
-            stations[x[0]].add_connection(x[1], int(x[2]))
-            stations[x[1]].add_connection(x[0], int(x[2]))
+            stations[x[0]].add_connection(x[1], float(x[2]))
+            stations[x[1]].add_connection(x[0], float(x[2]))
