@@ -1,14 +1,18 @@
 from load import load_stations, load_connections
 import random
+import argparse
+import pandas as pd
 
-def main():
+
+def main(the_map, output_file):
     # Which funtion to run: 0 = count, 1 = create_random_route
     run = 1
-    load_mode = 'Holland'
     
-    stations = load_stations(f'data/Stations{load_mode}.csv')
-    load_connections(f'data/Connecties{load_mode}.csv', stations)
-    
+    stations = load_stations(f'data/Stations{the_map}.csv')
+    load_connections(f'data/Connecties{the_map}.csv', stations)
+
+    # Create empty dataframe with columns to store the info from the tracks.
+    tracks_df = pd.DataFrame(columns = ["train", "stations"])
     
     if run == 0:
         count_stations(stations)
@@ -33,8 +37,17 @@ def main():
             print(f"Traject {i + 1} ({int(routes[i][-1])} min): ", end='')
             print(*routes[i][:-1], sep=' | ')
             print()
-                
+            # Het duurde even om uit te vinden hoe je routes opslaat, je slaat het op als : ["Den Haag", "Delft" , ..., 43.0]
+            # Het lijkt me handiger om de steden binnen deze lijst in een lijst te zetten, dus: [["Den Haag", "Delft", ...], 43.0]
+            # Zo kan je dit makkelijk uitschrijven als output, dit lukt me op dit moment niet, omdat het in deze vorm opgeslagen staat.
+            # Deze lijst kan dan op de plek waar nu "Test" staat worden gezet.
+            tracks_df = tracks_df.append(pd.DataFrame([["train_" + str(i + 1), "Test"]], columns = ["train", "stations"]))
+        
         print("Score:", score)
+        tracks_df = tracks_df.append(pd.DataFrame([["score", score]], columns = ["train", "stations"]))
+
+        # Save results to output csv file
+        tracks_df.to_csv(output_file, index = False)
         
     
 def count_stations(stations):
@@ -111,5 +124,16 @@ def create_random_route(stations, passed_stations):
     return route, passed_stations
   
        
-if __name__ == '__main__':
-    main()
+if __name__ == "__main__":
+    # Set-up parsing command line arguments
+    parser = argparse.ArgumentParser(description = "Create train trajects")
+
+    # Adding arguments
+    parser.add_argument("the_map", choices=["Nationaal", "Holland"])
+    parser.add_argument("output_file", help = "output file (csv)")
+
+    # Read arguments from command line
+    args = parser.parse_args()
+
+    # Run main with provided arguments
+    main(args.the_map, args.output_file)
