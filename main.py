@@ -29,9 +29,20 @@ def main(the_map, output_file):
     
         # Calculate score
         minutes = 0
+        fraction = 0
         for tra in routes:
             minutes += tra[-1]
-        score = 10000 * len(set(passed_stations)) / len(stations) - (len(routes) * 100 + minutes)
+            
+        # for x in routes:
+        #     for i in len(x[:-1]):
+                
+        
+    
+        score = 10000 * (len(set(passed_stations)) / 56) - (len(routes) * 100 + minutes)
+        
+        print("p: ", fraction / 56)
+        print("T: ", len(routes))
+        print("min: ", minutes)
         
         # Print output
         for i in range(len(routes)):
@@ -42,7 +53,7 @@ def main(the_map, output_file):
             # Het lijkt me handiger om de steden binnen deze lijst in een lijst te zetten, dus: [["Den Haag", "Delft", ...], 43.0]
             # Zo kan je dit makkelijk uitschrijven als output, dit lukt me op dit moment niet, omdat het in deze vorm opgeslagen staat.
             # Deze lijst kan dan op de plek waar nu "Test" staat worden gezet.
-            tracks_df = tracks_df.append(pd.DataFrame([["train_" + str(i + 1), "Test"]], columns = ["train", "stations"]))
+            tracks_df = tracks_df.append(pd.DataFrame([["train_" + str(i + 1), str(routes[i][:-1]).replace("\'", "")]], columns = ["train", "stations"]))
         
         print("Score:", score)
         tracks_df = tracks_df.append(pd.DataFrame([["score", score]], columns = ["train", "stations"]))
