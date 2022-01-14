@@ -22,19 +22,21 @@ def visualization(map, stations):
     m.drawcountries()
 
     for station in stations:
-        lat, lon = stations[station]._x, stations[station]._y
-        xpt, ypt = m(lon, lat)
-        m.plot(xpt, ypt, "ro", markersize=1)
-
-    xs = []
-    ys = []
-    xx, yy = m(4.872356, 52.338889)
-    xs.append(xx)
-    ys.append(yy)
-    xx, yy = m(5.914166451, 52.96138763)
-    xs.append(xx)
-    ys.append(yy)
-    m.plot(xs,ys, linewidth=0.5)
+        lat_s, lon_s = stations[station]._x, stations[station]._y
+        xpt_s, ypt_s = m(lon_s, lat_s)
+        m.plot(xpt_s, ypt_s, "ro", markersize=2)
+        for connection in stations[station]._connections_loc:
+            xline = []
+            yline = []
+            xline.append(xpt_s)
+            yline.append(ypt_s)
+            lat_c, lon_c = stations[station]._connections_loc[connection]
+            xpt_c, ypt_c = m(lon_c, lat_c)
+            # print(f"{station}: {connection}")
+            # print()
+            xline.append(xpt_c)
+            yline.append(ypt_c)
+            m.plot(xline, yline, linewidth=0.5, color='b')
 
     plt.title(f'{map} Intercities')
     plt.savefig(f'plots/test_{map}.png')
