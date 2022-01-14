@@ -1,4 +1,5 @@
 from load import load_stations, load_connections
+from visualization import visualization
 import random
 import argparse
 import pandas as pd
@@ -48,6 +49,7 @@ def main(the_map, output_file):
 
         # Save results to output csv file
         tracks_df.to_csv(output_file, index = False)
+        visualization(the_map, stations)
         
     
 def count_stations(stations):
