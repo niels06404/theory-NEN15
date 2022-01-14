@@ -60,7 +60,7 @@ def main(the_map, output_file):
 
         # Save results to output csv file
         tracks_df.to_csv(output_file, index = False)
-        visualization(the_map, stations)
+        visualization(the_map, stations, routes)
         
     
 def count_stations(stations):
@@ -104,7 +104,8 @@ def create_random_route(stations, passed_stations):
             if flag == len(route):
                 if len(route) <= 5:
                         return 1, passed_stations1
-        
+
+                traject_visualization(route, stations)
                 route.append(time)
                 return route, passed_stations
             
@@ -133,8 +134,14 @@ def create_random_route(stations, passed_stations):
     if len(route) <= 5:
             return 1, passed_stations1
     
+    traject_visualization(route, stations)
     route.append(time)
     return route, passed_stations
+
+def traject_visualization(route, stations):
+    for i in range(len(route[:-1])):
+        stations[route[i]].set_connection_visited(route[i+1])
+
   
        
 if __name__ == "__main__":
