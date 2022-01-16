@@ -1,7 +1,9 @@
-from mpl_toolkits.basemap import Basemap
+import random
+
 import matplotlib.pyplot as plt
 import pandas as pd
-import random
+from mpl_toolkits.basemap import Basemap
+
 
 def visualization(map, stations, routes):
     if map == "Nationaal":
@@ -43,7 +45,7 @@ def visualization(map, stations, routes):
                 # plt.plot(x, y, c=color)
                 # col = "r"           
             else:
-              col = "black"
+                col = "black"
 
             xpt_c, ypt_c = m(lon_c, lat_c)
             # print(f"{station}: {connection}")
@@ -52,12 +54,10 @@ def visualization(map, stations, routes):
             yline.append(ypt_c)
             m.plot(xline, yline, linewidth=0.5, color=col)
 
-    
-
     plt.title(f'{map} Intercities')
     plt.savefig(f'plots/test_{map}.png')
 
-#### hebben we nog nodig
+# ### hebben we nog nodig
 #     if i % 2 == 0:
 #         col = "ro"
 #     else:
