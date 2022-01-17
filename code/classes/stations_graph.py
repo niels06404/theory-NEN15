@@ -29,6 +29,7 @@ class StationsGraph():
         '''
         Loads all the connections into the stations.
         '''
+        connections_all = set()
         with open(input_file, 'r') as file:
             # Skip header line
             next(file)
@@ -37,13 +38,16 @@ class StationsGraph():
             for line in file:
                 x = line.strip().split(',')
 
-                # Add connection with time
+                # Add connections to Station class
                 self.stations[x[0]].add_connection(x[1], float(x[2]))
                 self.stations[x[1]].add_connection(x[0], float(x[2]))
 
-                # Add connection with coordinates
-                self.stations[x[0]].add_connection_loc(x[1], self.stations[x[1]]._x, self.stations[x[1]]._y)
-                self.stations[x[1]].add_connection_loc(x[0], self.stations[x[0]]._x, self.stations[x[0]]._y)
+                # Save a set of all connections
+                # NOTE: hier kunnen we nog tellen hoe vaak connectie gebruikt
+                connections_all.add((x[0], x[1]))
+                connections_all.add((x[1], x[0]))
+        
+        return connections_all
 
     def add_route(self, starting_station):
         '''
@@ -59,13 +63,16 @@ class StationsGraph():
         for route in self.routes:
             connections = connections.union(self.routes[route].connections)
 
-        duplicates = set()
+        connections_inversed = set()
         for connection in connections:
-            duplicates.add((connection[1], connection[0]))
+            connections_inversed.add((connection[1], connection[0]))
 
-        connections = connections.union(duplicates)
+        connections = connections.union(connections_inversed)
 
         return connections
+    
+    def get_unused_connections(self):
+        return list(self.connections - self.get_visited_connections())
 
     def calculate_score(self):
         '''
@@ -74,7 +81,7 @@ class StationsGraph():
         Min the total time of all routes (in minutes).
         '''
         # 56 for Holland, 178 for Nationaal - I think
-        p = len(self.get_visited_connections()) / 56
+        p = len(self.get_visited_connections()) / len(self.connections)
         t = len(self.routes)
         m = 0
         for route in self.routes:

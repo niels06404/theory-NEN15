@@ -4,11 +4,17 @@ class Route():
         self.time = 0
         self.connections = set()
 
-    def is_valid(self):
+    def is_valid(self, the_map):
         '''
         Returns True if the route is valid according to the given restrictions.
         False otherwise.
         '''
+        
+        if the_map == "Nationaal":
+            time_max = 180
+        else:
+            time_max = 120
+        
         # Route should have at least made one connection
         if len(self.stations) < 2:
             return False
@@ -19,7 +25,7 @@ class Route():
                 return False
 
         # Total time should not be greater than limit
-        if self.time > 120:
+        if self.time > time_max:
             return False
 
         return True
