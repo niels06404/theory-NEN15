@@ -1,13 +1,14 @@
 import argparse
 from code.algorithms import randomize
 from code.classes.stations_graph import StationsGraph
-from visualization import visualization
+from visualization import visualization, cleanup_connections
+import sys
 
 import pandas as pd
 
 
 def main(the_map, output_file):
-    TRIES = 1000000
+    TRIES = 10
     print(f"Calculating best routes out of {TRIES} tries...")
 
     # Load data into the graph
@@ -16,19 +17,43 @@ def main(the_map, output_file):
     # Random solution
     best_graph = None
     best_score = 0
+    total_score = 0
     for _ in range(TRIES):
         random_graph = randomize.random_assignment(stations_graph, the_map)
+        # NOTE: Geeft dezelfde score
+        print(random_graph.calculate_score())
+        print(randomize.random_assignment(stations_graph, the_map))
         if random_graph.calculate_score() > best_score:
             best_graph = random_graph
             best_score = random_graph.calculate_score()
+        total_score += random_graph.calculate_score()
+    average_score = total_score / TRIES
     print(f"Random algorithm completed successfully with a score of {best_graph.calculate_score()}.")
 
     # Save graph to .csv file
     generate_output(best_graph, output_file)
     print(f"See '{output_file}' for generated routes.")
-    print(f"loading visualization...")
-
+    
+    # Output info to file for personal use
+    sys.stdout = open("output.txt", "w")
+    for i, route in enumerate(best_graph.routes.values()):
+        print(f"Route {i + 1}", end=': ') 
+        for station in route.stations:
+            print(station._name, end=', ')
+        print("Time:", route.time)
+    print()
+    print("Unvisited connections:", cleanup_connections(best_graph.get_unused_connections()), ", Length:", len(cleanup_connections(best_graph.get_unused_connections())))
+    print("p =", len(best_graph.get_visited_connections()) / len(best_graph.connections))
+    print("T =", len(best_graph.routes))
+    print("Min =", sum([route.time for route in best_graph.routes.values()]))
+    print("Score:", best_graph.calculate_score())
+    print(f"Average score: {average_score} of {TRIES} tries")
+    sys.stdout.close()
+    sys.stdout = sys.__stdout__
+    
+    print(f"Loading visualization...")
     visualization(the_map, best_graph)
+    print(f"Done! See 'test_{the_map}.png' for visualization.")
 
 
 def generate_output(graph, output_file):
