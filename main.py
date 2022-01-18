@@ -5,7 +5,7 @@ from code.classes.stations_graph import StationsGraph
 
 import pandas as pd
 
-# from visualization import cleanup_connections, visualization
+from visualization import cleanup_connections, visualization
 
 
 def main(the_map, output_file, RUNS):
@@ -35,7 +35,7 @@ def main(the_map, output_file, RUNS):
     generate_personal_output(best_graph, average_score, RUNS)
 
     print("Loading visualization...")
-    # visualization(the_map, best_graph)
+    visualization(the_map, best_graph)
     print(f"Done! See 'test_{the_map}.png' for visualization.")
 
 
@@ -47,7 +47,7 @@ def generate_personal_output(graph, average_score, RUNS):
             print(station._name, end=', ')
         print("Time:", route.time)
     print()
-    # print("Unvisited connections:", cleanup_connections(graph.get_unused_connections()), ", Length:", len(cleanup_connections(graph.get_unused_connections())))
+    print("Unvisited connections:", cleanup_connections(graph.get_unused_connections()), ", Length:", len(cleanup_connections(graph.get_unused_connections())))
     print("p =", len(graph.get_visited_connections()) / len(graph.connections))
     print("T =", len(graph.routes))
     print("Min =", sum([route.time for route in graph.routes.values()]))
