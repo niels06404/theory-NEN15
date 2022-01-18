@@ -46,7 +46,7 @@ class StationsGraph():
                 # NOTE: hier kunnen we nog tellen hoe vaak connectie gebruikt
                 connections_all.add((x[0], x[1]))
                 connections_all.add((x[1], x[0]))
-        
+
         return connections_all
 
     def add_route(self, starting_station):
@@ -70,7 +70,7 @@ class StationsGraph():
         connections = connections.union(connections_inversed)
 
         return connections
-    
+
     def get_unused_connections(self):
         return list(self.connections - self.get_visited_connections())
 

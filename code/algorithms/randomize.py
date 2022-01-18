@@ -7,7 +7,7 @@ def random_assignment(input_graph, the_map):
     Randomly assigns valid stations to routes.
     '''
     graph = copy.deepcopy(input_graph)
-    
+
     unavailable_options = set()
     if the_map == "Nationaal":
         MAX_LENGTH = 20

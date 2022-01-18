@@ -9,12 +9,12 @@ class Route():
         Returns True if the route is valid according to the given restrictions.
         False otherwise.
         '''
-        
+
         if the_map == "Nationaal":
             MAX_TIME = 180
         else:
             MAX_TIME = 120
-        
+
         # Route should have at least made one connection
         if len(self.stations) < 2:
             return False
