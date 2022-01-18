@@ -11,9 +11,9 @@ class Route():
         '''
         
         if the_map == "Nationaal":
-            time_max = 180
+            MAX_TIME = 180
         else:
-            time_max = 120
+            MAX_TIME = 120
         
         # Route should have at least made one connection
         if len(self.stations) < 2:
@@ -25,7 +25,7 @@ class Route():
                 return False
 
         # Total time should not be greater than limit
-        if self.time > time_max:
+        if self.time > MAX_TIME:
             return False
 
         return True
