@@ -11,25 +11,15 @@ Het algoritme is niet helemaal random, omdat:
 - Het algoritme neemt alleen geldige oplossingen mee (alleen connecties die bestaan). Hierdoor worden ongeldige oplossingen uitgesloten.
 
 ## Voorbeeld resultaat
-Route 1: Hoorn, Zaandam, Castricum, Alkmaar, Den Helder, Time: 83.0 <br />
-Route 2: Schiedam Centrum, Rotterdam Centraal, Dordrecht, Time: 22.0 <br />
-Route 3: Zaandam, Castricum, Alkmaar, Den Helder, Time: 57.0 <br />
-Route 4: Gouda, Den Haag Centraal, Delft, Schiedam Centrum, Rotterdam Centraal, Dordrecht, Time: 60.0 <br />
-Route 5: Delft, Schiedam Centrum, Rotterdam Centraal, Rotterdam Alexander, Gouda, Den Haag Centraal, Leiden Centraal, Heemstede-Aerdenhout, Haarlem, Beverwijk, Zaandam, Time: 120.0 <br />
-Route 6: Amsterdam Amstel, Amsterdam Zuid, Schiphol Airport, Leiden Centraal, Alphen a/d Rijn, Gouda, Rotterdam Alexander, Rotterdam Centraal, Schiedam Centrum, Delft, Den Haag Centraal, Time: 107.0 <br />
-Route 7: Rotterdam Centraal, Schiedam Centrum, Delft, Den Haag Centraal, Leiden Centraal, Alphen a/d Rijn, Gouda, Rotterdam Alexander, Time: 80.0
-
-Unvisited connections: [('Haarlem', 'Amsterdam Sloterdijk'), ('Amsterdam Zuid', 'Amsterdam Sloterdijk'), ('Amsterdam Centraal', 'Amsterdam Sloterdijk'), ('Amsterdam Amstel', 'Amsterdam Centraal'), ('Hoorn', 'Alkmaar'), ('Beverwijk', 'Castricum'), ('Zaandam', 'Amsterdam Sloterdijk')] , Length: 7 <br />
-p = 0.75 <br />
-T = 7 <br />
-Min = 529.0 <br />
-Score: 6271.0
+![Resultaten](Voorbeeld_resultaat_random.png)
 
 ### Gemiddelde resultaat
+De gemiddelde score is ongeveer 6900.
 
 ### Uitleg
 De score wordt berekend op basis van de volgende formule: K = p * 10000 - (T * 100 + Min). In deze formule is K de kwaliteit van de gegenereerde routes, p de fractie van de gebruikte connecties, T het aantal trajecten en Min de totale tijd van alle trajecten (in minuten).
 
-Dit zijn de resultaten van een lijnvoering voor Holland. Er zijn enkele connecties niet gebruikt, dit is omdat er random routes worden gegenereerd, hierdoor is p dus niet gelijk aan 1.
+Dit zijn de resultaten van een lijnvoering voor Holland. Er zijn enkele connecties niet gebruikt, dit is omdat er random routes worden gegenereerd, hierdoor is p dus niet gelijk aan 1. Dit is dus geen goede oplossing, omdat niet alle verbindingen worden gemaakt. Als je het random algoritme vaak genoeg itereert kunnen er wel oplossingen onstaan waarbij alle connecties gebruikt zijn. Het kan natuurlijk altijd dat je met een random algoritme heel dicht bij een optimale uitkomst kunt komen.
 
-Uitleggen of het goed of niet goed is, idee krijgen over waar je heen wilt, wat je nog wilt implementeren, 
+## Vooruitblik
+We gaan de stations sorteren op basis van het aantal connecties. De stations met de minste aantal connecties zullen als eerste gekozen worden als startstation. Vervolgens gaan wij het greedy algoritme toepassen door elke keer het station met het minst aantal connecties toe te voegen aan het traject.
