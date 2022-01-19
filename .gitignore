@@ -129,6 +129,6 @@ dmypy.json
 .pyre/
 
 # Personal (throwaway) files
-.txt
-baseline.md
-Voorbeeld_resultaat_random.png
+/*.txt
+/baseline.md
+/Voorbeeld_resultaat_random.png
