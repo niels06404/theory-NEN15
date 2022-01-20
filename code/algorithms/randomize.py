@@ -25,7 +25,8 @@ def random_assignment(input_graph, the_map):
         graph.add_route(graph.stations[starting_station])
 
         # Keep adding stations to route until time exceeds limit
-        route = graph.routes[starting_station]
+        key = list(graph.routes.keys())[-1]
+        route = graph.routes[key]
         while route.time < MAX_TIME:
             # Stop algorithm from visiting the same station twice in one route
             # NOTE: Can be changed to not allowing duplicate connections at all or only allowing revisiting after n steps, for example.
@@ -46,6 +47,8 @@ def random_assignment(input_graph, the_map):
 
         # Remove route if it is not valid
         if not route.is_valid(the_map):
-            graph.routes.pop(starting_station)
+            graph.routes.popitem()
+        elif route.is_valid(the_map):
+            graph.count_visited_connections(route.connections)
 
     return graph

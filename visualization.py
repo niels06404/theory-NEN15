@@ -1,10 +1,10 @@
 
 import copy
-import matplotlib.pyplot as plt
-from mpl_toolkits.basemap import Basemap
-
 
 def visualization(the_map, graph):
+    import matplotlib.pyplot as plt
+    from mpl_toolkits.basemap import Basemap
+
     if the_map == "Nationaal":
         fonts = "xx-small"
         col = ["#a8d5e2", "#f9a620", "#ffd449", "#548c2f", "#104911", "#c84630", "#00916e", "#a4036f", "#7a6c5d", "#19297c",

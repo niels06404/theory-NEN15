@@ -38,16 +38,10 @@ class Route():
         self.stations.append(station)
         self.time += time
 
-    def get_possibilities(self, unavailable_connections, stations=False):
+    def get_possibilities(self, unavailable_connections):
         '''
         Returns a list of possibilities to where a connection can be made.
         '''
-        available_connections = set()
-
-        if not stations:
-            available_connections = set(self.stations[-1].get_possible_connections())
-        else:
-            for station in stations:
-                available_connections.add(stations[station]._name)
+        available_connections = set(self.stations[-1].get_possible_connections())
 
         return list(available_connections - unavailable_connections)

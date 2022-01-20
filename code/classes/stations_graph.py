@@ -1,7 +1,7 @@
 from .station import Station
 from .route import Route
 
-
+import uuid
 class StationsGraph():
     def __init__(self, stations_file, connections_file):
         self.stations = self.load_stations(stations_file)
@@ -29,7 +29,7 @@ class StationsGraph():
         '''
         Loads all the connections into the stations.
         '''
-        connections_all = set()
+        connections_all = {}
         with open(input_file, 'r') as file:
             # Skip header line
             next(file)
@@ -43,9 +43,8 @@ class StationsGraph():
                 self.stations[x[1]].add_connection(x[0], float(x[2]))
 
                 # Save a set of all connections
-                # NOTE: hier kunnen we nog tellen hoe vaak connectie gebruikt
-                connections_all.add((x[0], x[1]))
-                connections_all.add((x[1], x[0]))
+                connections_all[((x[0], x[1]))] = 0
+                connections_all[((x[1], x[0]))] = 0
 
         return connections_all
 
@@ -53,7 +52,10 @@ class StationsGraph():
         '''
         Creates a new route with the given starting station.
         '''
-        self.routes[starting_station._name] = Route(starting_station)
+        if not starting_station._name in self.routes.keys():
+            self.routes[starting_station._name] = Route(starting_station)
+        else:
+            self.routes[starting_station._name + f"{uuid.uuid1()}"] = Route(starting_station)
 
     def get_visited_connections(self):
         '''
@@ -72,7 +74,11 @@ class StationsGraph():
         return connections
 
     def get_unused_connections(self):
-        return list(self.connections - self.get_visited_connections())
+        return list(set(self.connections.keys()) - self.get_visited_connections())
+    
+    def count_visited_connections(self, connections_route):
+        for connection in connections_route:
+            self.connections[connection] += 1
 
     def calculate_score(self):
         '''
