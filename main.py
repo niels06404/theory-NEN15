@@ -1,6 +1,7 @@
 import argparse
 import sys
 from xmlrpc.client import boolean
+from code.algorithms import greedy as gr
 from code.algorithms import randomize
 from code.classes.stations_graph import StationsGraph
 
@@ -13,34 +14,40 @@ def main(the_map, output_file, RUNS, vis):
 
     # Load data into the graph
     stations_graph = StationsGraph(f'data/Stations{the_map}.csv', f'data/Connecties{the_map}.csv')
+    
+    test_greedy_graph = gr.Greedy(stations_graph, the_map)
+    test_greedy_graph.run()
+
+    test_randomGreedy_graph = gr.RandomGreedy(stations_graph, the_map)
+    test_randomGreedy_graph.run()
 
     # Random solution
-    best_graph = None
-    best_score = 0
-    total_score = 0
-    for _ in range(RUNS):
-        random_graph = randomize.random_assignment(stations_graph, the_map)
-        if random_graph.calculate_score() > best_score:
-            best_graph = random_graph
-            best_score = random_graph.calculate_score()
-        total_score += random_graph.calculate_score()
-    average_score = total_score / RUNS
-    
-    print(f"Random algorithm completed successfully with a score of {best_graph.calculate_score()}.")
+    # best_graph = None
+    # best_score = 0
+    # total_score = 0
+    # for _ in range(RUNS):
+    #     random_graph = randomize.random_assignment(stations_graph, the_map)
+    #     if random_graph.calculate_score() > best_score:
+    #         best_graph = random_graph
+    #         best_score = random_graph.calculate_score()
+    #     total_score += random_graph.calculate_score()
+    # average_score = total_score / RUNS
+
+    # print(f"Random algorithm completed successfully with a score of {best_graph.calculate_score()}.")
 
     # Save graph to .csv file
-    generate_output(best_graph, output_file)
+    generate_output(test_randomGreedy_graph.graph, output_file)
     print(f"See '{output_file}' for generated routes.")
 
     # Output info to file for personal use
-    generate_personal_output(best_graph, average_score, RUNS)
+    # generate_personal_output(best_graph, average_score, RUNS)
 
     # Visualize results on map
     if vis:
         from visualization import visualization
         
         print("Loading visualization...")
-        visualization(the_map, best_graph)
+        visualization(the_map, test_randomGreedy_graph.graph)
         print(f"Done! See 'test_{the_map}.png' for visualization.")
 
 
