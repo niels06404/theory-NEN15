@@ -37,6 +37,7 @@ def random_assignment(input_graph, the_map):
 
             # Stop adding if no options are left
             if len(possibilities) == 0:
+                unavailable_options = set()
                 break
             # Otherwise randomly pick a station
             choice = random.choice(possibilities)
