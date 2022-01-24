@@ -11,6 +11,7 @@ class Greedy:
     def run(self):
         unavailable_options = set()
         stations_passed_list = []
+        starting_stations_passed_list = []
         # Keep adding routes until max amount is reached or all stations are connected
         while not len(self.graph.routes) >= self.MAX_LENGTH and len(self.graph.get_visited_connections()) < len(self.graph.connections):
 
@@ -25,6 +26,11 @@ class Greedy:
                 # Unavailable_options prevents that a station is visited multiple times in one route
                 for station in route.stations:
                     unavailable_options.add(station._name)
+                
+                # Stations with one possible direction can only be at the beginning of the traject
+                for station in self.graph.stations:
+                    if len(self.graph.stations[station]._connections) == 1:
+                        unavailable_options.add(self.graph.stations[station]._name)
 
                 possibilities = route.get_possibilities(unavailable_options)
                 
@@ -37,7 +43,7 @@ class Greedy:
                 for poss in possibilities:
                     possibilities1.append(self.graph.stations[poss])
 
-                choice = self.get_best_station(possibilities1)
+                choice = self.get_best_station(possibilities1)  
 
                 route.add_station(self.graph.stations[choice._name], route.stations[-1]._connections[choice._name])
 
@@ -55,7 +61,14 @@ class Greedy:
                 self.graph.routes.popitem()
             elif route.is_valid(self.map):
                 self.graph.count_visited_connections(route.connections)
-                stations_passed_list.append(starting_station)
+                stations_passed_list = self.add_stations(stations_passed_list)
+                starting_stations_passed_list.append(starting_station)
+
+    def add_stations(self, stations_passed_list):
+        for station in self.graph.routes[list(self.graph.routes.keys())[-1]].stations:
+            if station not in stations_passed_list:
+                stations_passed_list.append(station)
+        return stations_passed_list
 
     # Get station with the least amount of possible connections
     def get_best_station(self, possibilities):
@@ -65,13 +78,21 @@ class Greedy:
 
     # Get starting station with the least amount of possible connections
     def get_best_starting_station(self, stations_list):
+
         stations = list(self.graph.stations.values())
         
         if len(stations_list) > 0:
-            for st in stations_list:
-                stations.remove(st)
+            for station in stations_list:
+                stations.remove(station)
 
-        stations.sort(key=lambda station: len(station._connections))
+        if len(stations) > 0:
+            stations.sort(key=lambda station: len(station._connections))
+        else:
+            new_dict = {}
+            for connection in self.graph.connections:
+                new_dict[connection] = self.graph.connections[connection] + self.graph.connections[(connection[1], connection[0])]
+    
+            return self.graph.stations[(min(new_dict.items(), key=lambda x: x[1])[0])[0]]
 
         return stations.pop(0)
 
@@ -106,9 +127,3 @@ class NewGreedy(Greedy):
         
         # Return station with the least amount of connections
         return self.graph.stations[(min(new_dict.items(), key=lambda x: x[1])[0])]
-
-
-# NOTE: reverseNewGreedy met connecties volgen en in reverse order
-# NOTE: start station kiezen op basis van minste opties, als een station al bezocht is, deze uit deze lijst halen. Mocht deze lijst leeg zijn,
-# dan random een station kiezen.
-# NOTE: alle stations die maar een kant op kunnen altijd weghalen als gepasseerd worden

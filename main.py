@@ -42,12 +42,27 @@ def main(the_map, output_file, RUNS, vis):
     print()
 
     # ---------------------------------------------------- NewGreedy ---------------------------------------------------------
-    newGreedy_graph = gr.NewGreedy(stations_graph, the_map)
-    print("newGreedy algorithm is running...")
-    newGreedy_graph.run()
+    # newGreedy_graph = gr.NewGreedy(stations_graph, the_map)
+    # print("newGreedy algorithm is running...")
+    # newGreedy_graph.run()
+    # print(f"newGreedy algorithm completed successfully with a score of {newGreedy_graph.graph.calculate_score()}.")
+    # print()
 
-    print(f"newGreedy algorithm completed successfully with a score of {newGreedy_graph.graph.calculate_score()}.")
-    print()    
+    print("newGreedy algorithm is running ...")
+    best_graph = None
+    best_score = 0
+    # total_score = 0
+    for _ in range(RUNS):
+        newGreedy_graph = gr.NewGreedy(stations_graph, the_map)
+        newGreedy_graph.run()
+        if newGreedy_graph.graph.calculate_score() > best_score:
+            best_graph = newGreedy_graph
+            best_score = newGreedy_graph.graph.calculate_score()
+    #     total_score += newGreedy_graph.graph.calculate_score()
+    # average_score = total_score / RUNS
+
+    print(f"newGreedy algorithm completed successfully with a score of {best_graph.graph.calculate_score()}.")
+    print()
 
     # -------------------------------------------------------- random --------------------------------------------------------
     # best_graph = None
@@ -66,9 +81,10 @@ def main(the_map, output_file, RUNS, vis):
     print(f"Random algorithm completed successfully with a score of {random_graph.calculate_score()}.")
 
     print()
+
     # -------------------------------------------------------- output --------------------------------------------------------
     # Save graph to .csv file
-    generate_output(reverseGreedy_graph.graph, output_file)
+    generate_output(best_graph.graph, output_file)
     print(f"See '{output_file}' for generated routes.")
 
     # Output info to file for personal use
@@ -77,9 +93,9 @@ def main(the_map, output_file, RUNS, vis):
     # Visualize results on map
     if vis:
         from visualization import visualization
-        
+
         print("Loading visualization...")
-        visualization(the_map, reverseGreedy_graph.graph)
+        visualization(the_map, best_graph.graph)
         print(f"Done! See 'test_{the_map}.png' for visualization.")
 
 
