@@ -1,13 +1,14 @@
 import copy
 import random
 
+
 class Greedy:
     def __init__(self, input_graph, the_map):
         self.graph = copy.deepcopy(input_graph)
         self.map = the_map
         self.MAX_LENGTH = 20 if the_map == "Nationaal" else 7
         self.MAX_TIME = 180 if the_map == "Nationaal" else 120
- 
+
     def run(self):
         '''
         Executes the algorithm.
@@ -17,7 +18,7 @@ class Greedy:
         # Keep adding routes until max amount is reached or all stations are connected
         while not len(self.graph.routes) >= self.MAX_LENGTH and len(self.graph.get_visited_connections()) < len(self.graph.connections):
             starting_station = self.get_best_starting_station(stations_passed_list)
-            
+
             self.graph.add_route(self.graph.stations[starting_station._name])
 
             # Select current route
@@ -28,18 +29,18 @@ class Greedy:
                 # Make sure a station is not visited multiple times in one route
                 for station in route.stations:
                     unavailable_options.add(station._name)
-                
+
                 # Stations with one possible direction can only be at the beginning of a route
                 for station in self.graph.stations:
                     if len(self.graph.stations[station]._connections) == 1:
                         unavailable_options.add(self.graph.stations[station]._name)
 
                 possibilities = route.get_possibilities(unavailable_options)
-                
+
                 if len(possibilities) == 0:
                     unavailable_options = set()
                     break
-                
+
                 # Possibilities: station names, possibilities1: station objects
                 possibilities1 = []
                 for poss in possibilities:
@@ -73,7 +74,7 @@ class Greedy:
         for station in self.graph.routes[list(self.graph.routes.keys())[-1]].stations:
             if station not in stations_passed_list:
                 stations_passed_list.append(station)
-        
+
         return stations_passed_list
 
     def get_best_station(self, possibilities):
@@ -90,7 +91,7 @@ class Greedy:
         return a random station which has one or more open connections.
         '''
         stations = list(self.graph.stations.values())
-        
+
         # Remove visited stations from possibilities
         if len(stations_list) > 0:
             for station in stations_list:
@@ -114,7 +115,7 @@ class Greedy:
         Returns a random key from a dictionary with a value equal to the minimum value in the dictionary.
         '''
         minimum = min(dict_items.items(), key=func)[1]
-        keys = [k for k,v in dict_items.items() if v == minimum]
+        keys = [k for k, v in dict_items.items() if v == minimum]
         keys.sort()
 
         return random.choice(keys)
@@ -143,7 +144,7 @@ class AdaptedGreedy(Greedy):
         '''
         Returns the station with the least number of possibilities while also preffering stations with the least number of
         connections made.
-        '''        
+        '''
         # Get last station from route and create tuples of all possible connections
         for route in list(self.graph.routes.keys())[-1:]:
             possible_connections = []
@@ -155,8 +156,8 @@ class AdaptedGreedy(Greedy):
         for connection in possible_connections:
             new_dict[connection[1]] = self.graph.connections[connection]
             new_dict[connection[1]] += self.graph.connections[(connection[1], connection[0])]
-        
+
         # Return station with the least amount of connections
         result = self.get_random_minimum(new_dict, lambda x: x[1])
-        
+
         return self.graph.stations[result]

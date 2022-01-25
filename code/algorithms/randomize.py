@@ -29,7 +29,6 @@ def random_assignment(input_graph, the_map):
         route = graph.routes[key]
         while route.time < MAX_TIME:
             # Stop algorithm from visiting the same station twice in one route
-            # NOTE: Can be changed to not allowing duplicate connections at all or only allowing revisiting after n steps, for example.
             for station in route.stations:
                 unavailable_options.add(station._name)
 

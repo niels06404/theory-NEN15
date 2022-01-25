@@ -1,6 +1,7 @@
 
 import copy
 
+
 def visualization(the_map, graph):
     import matplotlib.pyplot as plt
     from mpl_toolkits.basemap import Basemap

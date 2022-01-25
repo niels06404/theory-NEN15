@@ -1,7 +1,9 @@
-from .station import Station
-from .route import Route
-
 import uuid
+
+from .route import Route
+from .station import Station
+
+
 class StationsGraph():
     def __init__(self, stations_file, connections_file):
         self.stations = self.load_stations(stations_file)
@@ -52,7 +54,7 @@ class StationsGraph():
         '''
         Creates a new route with the given starting station.
         '''
-        if not starting_station._name in self.routes.keys():
+        if starting_station._name not in self.routes.keys():
             self.routes[starting_station._name] = Route(starting_station)
         else:
             self.routes[starting_station._name + f"{uuid.uuid1()}"] = Route(starting_station)
@@ -75,7 +77,7 @@ class StationsGraph():
 
     def get_unused_connections(self):
         return list(set(self.connections.keys()) - self.get_visited_connections())
-    
+
     def count_visited_connections(self, connections_route):
         for connection in connections_route:
             self.connections[connection] += 1
