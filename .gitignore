@@ -131,4 +131,6 @@ dmypy.json
 # Personal (throwaway) files
 /*.txt
 /baseline.md
+/first_algorithm.md
 /Voorbeeld_resultaat_random.png
+/Voorbeeld_resultaat_greedy.png
