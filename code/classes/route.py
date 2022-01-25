@@ -43,5 +43,5 @@ class Route():
         Returns a list of possibilities to where a connection can be made.
         '''
         available_connections = set(self.stations[-1].get_possible_connections())
-
+        
         return list(available_connections - unavailable_connections)

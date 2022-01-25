@@ -67,7 +67,7 @@ def visualization(the_map, graph):
 
     plt.title(f'{the_map} Intercities')
     plt.legend(loc=2, fontsize=fonts)
-    plt.savefig(f'plots/test_{the_map}.png')
+    plt.savefig(f'plots/{the_map}_routes.png')
 
 
 def cleanup_connections(connections):

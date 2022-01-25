@@ -18,3 +18,6 @@ class Station():
         Returns a list of all possible connections.
         '''
         return self._connections
+    
+    def __repr__(self) -> str:
+        return f"{self._name}"
