@@ -4,7 +4,7 @@
 We hebben een variatie op Greedy gekozen, omdat we op deze manier de stations met de minst aantal verbindingen als eerste kunnen toevoegen aan een route. We hebben verschillende soorten variaties van het Greedy algoritme geprobeerd. Uiteindelijk hebben we een algoritme gevonden die start bij de stations met de minste connecties, waarna alle stations in de route geen optie meer zijn voor de volgende startstations van een routes. Als er geen stations meer over zijn om mee te starten wordt er gekeken naar de nog niet gepasseerde connecties en wordt random een van die twee stations als startstation van de route gekozen. Wanneer er connecties gemaakt worden binnen een traject wordt er gekeken naar hoe vaak een connectie al is gepasseerd en wordt de minst gepasseerde connectie als volgende verbinding van het traject gekozen. Een traject is af wanneer de tijd bijna gelijk is aan de gegeven maximale tijd. Dit gaat door tot het maximale aantal trajecten is bereikt of wanneer alle connecties gepasseerd zijn.
 
 ## Voorbeeld resultaat
-![Resultaat Greedy Holland](voorbeeld_resultaat_greedy.PNG)
+![Resultaat Greedy Holland](voorbeeld_resultaat_greedy.png)
 
 ### Analyse
 Zoals te zien is in het voorbeeld resultaat geeft de greedy met 50.000 runs als hoogste score de waarde 9160 voor de kaart van Holland. Dit is een grote verbetering ten opzichte van het random algoritme, wat met 50.000 runs een gemiddelde score van 6900 gaf. Verder is een verschil dat in greedy alle connecties gebruikt worden en in random gebeurt dit niet altijd.
