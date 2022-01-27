@@ -1,10 +1,12 @@
-import copy
+# import copy
+import pickle
 import random
 
 
 class Greedy:
     def __init__(self, input_graph, the_map):
-        self.graph = copy.deepcopy(input_graph)
+        # self.graph = copy.deepcopy(input_graph)
+        self.graph = pickle.loads(pickle.dumps(input_graph))
         self.map = the_map
         self.MAX_LENGTH = 20 if the_map == "Nationaal" else 7
         self.MAX_TIME = 180 if the_map == "Nationaal" else 120

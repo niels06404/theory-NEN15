@@ -1,4 +1,5 @@
-import copy
+# import copy
+import pickle
 import random
 
 
@@ -6,7 +7,8 @@ def random_assignment(input_graph, the_map):
     '''
     Randomly assigns valid stations to routes.
     '''
-    graph = copy.deepcopy(input_graph)
+    # graph = copy.deepcopy(input_graph)
+    graph = pickle.loads(pickle.dumps(input_graph))
 
     unavailable_options = set()
     if the_map == "Nationaal":
@@ -27,6 +29,7 @@ def random_assignment(input_graph, the_map):
         # Keep adding stations to route until time exceeds limit
         key = list(graph.routes.keys())[-1]
         route = graph.routes[key]
+
         while route.time < MAX_TIME:
             # Stop algorithm from visiting the same station twice in one route
             for station in route.stations:
@@ -38,6 +41,7 @@ def random_assignment(input_graph, the_map):
             if len(possibilities) == 0:
                 unavailable_options = set()
                 break
+
             # Otherwise randomly pick a station
             choice = random.choice(possibilities)
 
@@ -47,7 +51,7 @@ def random_assignment(input_graph, the_map):
 
         # Remove route if it is not valid
         if not route.is_valid(the_map):
-            graph.routes.popitem()
+            del graph.routes[key]
         elif route.is_valid(the_map):
             graph.count_visited_connections(route.connections)
 
