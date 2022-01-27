@@ -50,6 +50,22 @@ class StationsGraph():
 
         return connections_all
 
+    def is_solution(self, the_map):
+        '''
+        Returns True if the graph is a possible solution. False otherwise.
+        '''
+        if the_map == "Nationaal":
+            if len(self.routes) > 20 or len([self.routes[x].time for x in self.routes if self.routes[x].time > 180]) > 0:
+                return False
+        elif the_map == "Holland":
+            if len(self.routes) > 7 or len([self.routes[x].time for x in self.routes if self.routes[x].time > 120]) > 0:
+                return False
+
+        if len(self.routes) == 0:
+            return False
+
+        return True
+
     def add_route(self, starting_station):
         '''
         Creates a new route with the given starting station.
@@ -76,9 +92,15 @@ class StationsGraph():
         return connections
 
     def get_unused_connections(self):
+        '''
+        Returns all connections that have not been used yet.
+        '''
         return list(set(self.connections.keys()) - self.get_visited_connections())
 
     def count_visited_connections(self, connections_route):
+        '''
+        Returns the how many times each connection has been made.
+        '''
         for connection in connections_route:
             self.connections[connection] += 1
 
@@ -88,7 +110,6 @@ class StationsGraph():
         In which K is the quality of the generated routes, p the fraction of the used connections, T the number of routes and
         Min the total time of all routes (in minutes).
         '''
-        # 56 for Holland, 178 for Nationaal - I think
         p = len(self.get_visited_connections()) / len(self.connections)
         t = len(self.routes)
         m = 0
