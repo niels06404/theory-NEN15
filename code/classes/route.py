@@ -38,10 +38,18 @@ class Route():
         self.stations.append(station)
         self.time += time
 
+    def remove_last_station(self):
+        '''
+        Removes the last station from the route
+        '''
+        self.connections.remove((self.stations[-2]._name, self.stations[-1]._name))
+        self.time -= self.stations[-2]._connections[self.stations[-1]._name]
+        self.stations.pop()
+
     def get_possibilities(self, unavailable_connections):
         '''
         Returns a list of possibilities to where a connection can be made.
         '''
         available_connections = set(self.stations[-1].get_possible_connections())
 
-        return list(available_connections - unavailable_connections)
+        return sorted(list(available_connections - unavailable_connections))
