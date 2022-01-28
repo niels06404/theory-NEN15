@@ -4,110 +4,182 @@ import sys
 from code.algorithms import greedy as gr
 from code.algorithms import hillclimber as hc
 from code.algorithms import randomize
+from code.algorithms import randomize2 as r2
 from code.classes.stations_graph import StationsGraph
 
+import matplotlib.pyplot as plt
 import pandas as pd
+import seaborn as sns
 
 
 def main(the_map, output_file, RUNS, visual):
     # Load data into the graph
     stations_graph = StationsGraph(f'data/Stations{the_map}.csv', f'data/Connecties{the_map}.csv')
+    
+    # Set up datafrom for visualization
+    plot_df = pd.DataFrame(columns=["Random", "NewRandom", "Greedy", "RandomGreedy", "AdaptedGreedy"])
+    # plot_df = pd.DataFrame(columns=["AdaptedGreedy", "HillClimber"])
 
     # -------------------------------------------------------- Random --------------------------------------------------------
     random.seed()
 
-    # print("Random algorithm is running...")
-    # random_graph = randomize.random_assignment(stations_graph, the_map)
-
-    # print(f"Random algorithm completed successfully with a score of {random_graph.calculate_score()}.")
-    # print()
-
-    print(f"random algorithm is running {RUNS} times...")
-    best_score = 0
-    total_score = 0
-
+    print(f"Random algorithm is running {RUNS} times...")
+    best_score_random = 0
+    scores_random = []
+    
     for _ in range(RUNS):
         random_graph = randomize.random_assignment(stations_graph, the_map)
 
-        if random_graph.calculate_score() > best_score:
-            best_random_graph = random_graph
-            best_score = random_graph.calculate_score()
-        total_score += random_graph.calculate_score()
-        average_score = total_score / RUNS
+        if random_graph.calculate_score() > best_score_random:
+            best_random = random_graph
+            best_score_random = random_graph.calculate_score()
+        
+        scores_random.append(random_graph.calculate_score())
 
-    print(f"random algorithm completed successfully with a best score of {best_random_graph.calculate_score()} out of {RUNS} runs.")
+    print(f"Random completed successfully with a best score of {best_score_random} out of {RUNS} runs.")
     print()
+    
+    plot_df["Random"] = pd.Series(scores_random).values
+
+    # ------------------------------------------------------- NewRandom ------------------------------------------------------
+    random.seed()
+
+    print(f"NewRandom algorithm is running {RUNS} times...")
+    best_score_new_random = 0
+    scores_new_random = []
+
+    for _ in range(RUNS):
+        new_random = r2.NewRandom(stations_graph, the_map)
+        new_random.run()
+        
+        if new_random.graph.calculate_score() > best_score_new_random:
+            best_new_random = new_random
+            best_score_new_random = new_random.graph.calculate_score()
+
+        scores_new_random.append(new_random.graph.calculate_score())
+
+    print(f"NewRandom completed successfully with a best score of {best_score_new_random} out of {RUNS} runs.")
+    print()
+    
+    plot_df["NewRandom"] = pd.Series(scores_new_random).values
+
 
     # -------------------------------------------------------- Greedy --------------------------------------------------------
-    greedy = gr.Greedy(stations_graph, the_map)
-    print("Greedy algorithm is running...")
-    greedy.run()
-
-    print(f"Greedy completed successfully with a score of {greedy.graph.calculate_score()}.")
+    random.seed()
+    
+    print(f"Greedy algorithm is running {RUNS} times...")
+    best_score_greedy = 0
+    scores_greedy = []
+    
+    for _ in range(RUNS):
+        greedy = gr.Greedy(stations_graph, the_map)
+        greedy.run()
+        
+        if greedy.graph.calculate_score() > best_score_greedy:
+            best_greedy = greedy
+            best_score_greedy = greedy.graph.calculate_score()
+        
+        scores_greedy.append(greedy.graph.calculate_score())
+    
+    print(f"Greedy completed successfully with a best score of {best_score_greedy} out of {RUNS} runs.")
     print()
+    
+    plot_df["Greedy"] = pd.Series(scores_greedy).values
 
     # ----------------------------------------------------- RandomGreedy -----------------------------------------------------
-    random_greedy = gr.RandomGreedy(stations_graph, the_map)
-    print("randomGreedy algorithm is running...")
-    random_greedy.run()
-
-    print(f"randomGreedy completed successfully with a score of {random_greedy.graph.calculate_score()}.")
+    random.seed()
+    
+    print(f"RandomGreedy algorithm is running {RUNS} times...")
+    best_score_random_greedy = 0
+    scores_random_greedy = []
+    
+    for _ in range(RUNS):
+        random_greedy = gr.RandomGreedy(stations_graph, the_map)
+        random_greedy.run()
+        
+        if random_greedy.graph.calculate_score() > best_score_random_greedy:
+            best_random_greedy = random_greedy
+            best_score_random_greedy = random_greedy.graph.calculate_score()
+        
+        scores_random_greedy.append(random_greedy.graph.calculate_score())
+    
+    print(f"RandomGreedy completed successfully with a best score of {best_score_random_greedy} out of {RUNS} runs.")
     print()
+    
+    plot_df["RandomGreedy"] = pd.Series(scores_random_greedy).values
 
     # ----------------------------------------------------- ReverseGreedy ----------------------------------------------------
-    reverse_greedy = gr.ReverseGreedy(stations_graph, the_map)
-    print("reverseGreedy algorithm is running...")
-    reverse_greedy.run()
-
-    print(f"reverseGreedy completed successfully with a score of {reverse_greedy.graph.calculate_score()}.")
+    random.seed()
+    
+    print(f"ReverseGreedy algorithm is running {RUNS} times...")
+    best_score_reverse_greedy = 0
+    scores_reverse_greedy = []
+    
+    for _ in range(RUNS):
+        reverse_greedy = gr.ReverseGreedy(stations_graph, the_map)
+        reverse_greedy.run()
+        
+        if reverse_greedy.graph.calculate_score() > best_score_reverse_greedy:
+            best_reverse_greedy = reverse_greedy
+            best_score_reverse_greedy = reverse_greedy.graph.calculate_score()
+        
+        scores_reverse_greedy.append(reverse_greedy.graph.calculate_score())
+    
+    print(f"ReverseGreedy completed successfully with a best score of {best_score_reverse_greedy} out of {RUNS} runs.")
     print()
 
     # ----------------------------------------------------- AdaptedGreedy ----------------------------------------------------
     random.seed()
-
-    adapted_greedy = gr.AdaptedGreedy(stations_graph, the_map)
-    print("adaptedGreedy algorithm is running...")
-    adapted_greedy.run()
-
-    print(f"adaptedGreedy algorithm completed successfully with a score of {adapted_greedy.graph.calculate_score()}.")
+    
+    print(f"AdaptedGreedy algorithm is running {RUNS} times...")
+    best_score_adapted_greedy = 0
+    scores_adapted_greedy = []
+    all_adapted_greedy = []
+    
+    for _ in range(RUNS):
+        adapted_greedy = gr.AdaptedGreedy(stations_graph, the_map)
+        adapted_greedy.run()
+        
+        if adapted_greedy.graph.calculate_score() > best_score_adapted_greedy:
+            best_adapted_greedy = adapted_greedy
+            best_score_adapted_greedy = adapted_greedy.graph.calculate_score()
+        all_adapted_greedy.append(adapted_greedy.graph)
+        scores_adapted_greedy.append(adapted_greedy.graph.calculate_score())
+    
+    print(f"AdaptedGreedy completed successfully with a best score of {best_score_adapted_greedy} out of {RUNS} runs.")
     print()
-
-    # print(f"adaptedGreedy algorithm is running {RUNS} times...")
-    # best_score = 0
-    # total_score = 0
-
-    # for _ in range(RUNS):
-    #     adapted_greedy = gr.AdaptedGreedy(stations_graph, the_map)
-    #     adapted_greedy.run()
-
-    #     if adapted_greedy.graph.calculate_score() > best_score:
-    #         best_adapted_greedy = adapted_greedy
-    #         best_score = adapted_greedy.graph.calculate_score()
-    #     total_score += adapted_greedy.graph.calculate_score()
-    #     average_score = total_score / RUNS
-
-    # print(f"adaptedGreedy completed successfully with a best score of {best_adapted_greedy.graph.calculate_score()} out of {RUNS} runs.")
-    # print()
+    
+    plot_df["AdaptedGreedy"] = pd.Series(scores_adapted_greedy).values
 
     # ------------------------------------------------------ HillClimber -----------------------------------------------------
     random.seed()
-
-    hillclimber = hc.HillClimber(adapted_greedy.graph, the_map)
+    
     print("HillClimber algorithm is running ...")
-    hillclimber.run()
+    scores_hillclimber = []
+    
+    for graph in all_adapted_greedy:
+        hillclimber = hc.HillClimber(graph, the_map)
+        hillclimber.run()
+        scores_hillclimber.append(hillclimber.graph.calculate_score())   
 
     print(f"HillClimber completed successfully with a score of {hillclimber.graph.calculate_score()}.")
     print()
-
-    # TODO: Nationaal plot genereren met adaptedGreedy en HillClimber
+    
+    plot_df["HillClimber"] = pd.Series(scores_hillclimber).values
 
     # -------------------------------------------------------- Output --------------------------------------------------------
+    
+    sns.set_theme()
+    sns.set_context("poster")
+    p = sns.histplot(data=plot_df, kde=True, bins=80)
+    p.set_title(f"AdaptedGreedy vs. HillClimber ({RUNS} runs) - National")
+    p.set_xlabel("Score")
+    
+    plt.show()
+    
     # Save graph to .csv file
     generate_output(hillclimber.graph, output_file)
     print(f"See '{output_file}' for generated routes.")
-
-    # Output info to file for personal use
-    generate_personal_output(best_random_graph, average_score, RUNS)
 
     # Visualize results on map
     if visual:
@@ -116,26 +188,6 @@ def main(the_map, output_file, RUNS, visual):
         print("Loading visualization...")
         visualization(the_map, hillclimber.graph)
         print(f"Done! See '{the_map}_routes.png' for visualization.")
-
-
-def generate_personal_output(graph, average_score, RUNS):
-    from visualization import cleanup_connections
-
-    sys.stdout = open("output.txt", "w")
-    for i, route in enumerate(graph.routes.values()):
-        print(f"Route {i + 1}", end=': ')
-        for station in route.stations:
-            print(station._name, end=', ')
-        print("Time:", route.time)
-    print()
-    print("Unvisited connections:", cleanup_connections(graph.get_unused_connections()), ", Length:", len(cleanup_connections(graph.get_unused_connections())))
-    print("p =", len(graph.get_visited_connections()) / len(graph.connections))
-    print("T =", len(graph.routes))
-    print("Min =", sum([route.time for route in graph.routes.values()]))
-    print("Score:", graph.calculate_score())
-    print(f"Average score: {average_score} out of {RUNS} runs")
-    sys.stdout.close()
-    sys.stdout = sys.__stdout__
 
 
 def generate_output(graph, output_file):
