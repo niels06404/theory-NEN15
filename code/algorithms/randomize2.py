@@ -1,5 +1,6 @@
-import copy
+# import copy
 import pickle
+import random
 
 class NewRandom:
     def __init__(self, input_graph, the_map):
@@ -11,28 +12,45 @@ class NewRandom:
     
     def run(self):
         unavailable_options = set()
-        # while not len(self.graph.routes) >= self.MAX_LENGTH and len(self.graph.get_visited_connections()) < len(self.graph.connections):
-        #     pass
-        for connection in self.graph.connections:
-            print(connection, self.graph.connections[connection])
+        while not len(self.graph.routes) >= self.MAX_LENGTH and len(self.graph.get_visited_connections()) < len(self.graph.connections):
+            starting_station = self.get_starting_station()
+
+            # Create a new route with starting station
+            self.graph.add_route(self.graph.stations[starting_station])
+
+            # Keep adding stations to route until time exceeds limit
+            key = list(self.graph.routes.keys())[-1]
+            route = self.graph.routes[key]
+
+            while route.time < self.MAX_TIME:
+                # Stop algorithm from visiting the same station twice in one route
+                for station in route.stations:
+                    unavailable_options.add(station._name)
+
+                possibilities = route.get_possibilities(unavailable_options)
+
+                # Stop adding if no options are left
+                if len(possibilities) == 0:
+                    unavailable_options = set()
+                    break
+
+                # Otherwise randomly pick a station
+                choice = random.choice(possibilities)
+
+                # Add randomly picked station to route
+                route.add_station(self.graph.stations[choice], route.stations[-1]._connections[choice])
+                unavailable_options = set()
+
+            # Remove route if it is not valid
+            if not route.is_valid(self.map):
+                del self.graph.routes[key]
+            elif route.is_valid(self.map):
+                self.graph.count_visited_connections(route.connections)
     
     def get_starting_station(self):
         possibilities = [connection for connection in self.graph.connections if self.graph.connections[connection] == 0]
+        possibility = random.choice(possibilities)
+        while self.graph.connections[(possibility[1], possibility[0])] != 0:
+            possibility = random.choice(possibilities)
         
-
-        # # Get last station from route and create tuples of all possible connections
-        # for route in list(self.graph.routes.keys())[-1:]:
-        #     possible_connections = []
-        #     for possibility in possibilities:
-        #         possible_connections.append((self.graph.routes[route].stations[-1]._name, possibility._name))
-
-        # # Count number of made connections for both directions
-        # new_dict = {}
-        # for connection in possible_connections:
-        #     new_dict[connection[1]] = self.graph.connections[connection]
-        #     new_dict[connection[1]] += self.graph.connections[(connection[1], connection[0])]
-
-        # # Return station with the least amount of connections
-        # result = self.get_random_minimum(new_dict, lambda x: x[1])
-
-        # return self.graph.stations[result]
+        return random.choice(possibility)
