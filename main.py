@@ -1,184 +1,108 @@
 import argparse
-import random
-import sys
-from code.algorithms import greedy as gr
-from code.algorithms import hillclimber as hc
-from code.algorithms import randomize
-from code.algorithms import randomize2 as r2
 from code.classes.stations_graph import StationsGraph
+from code.run import run_algorithm, run_hill_climber
 
-import matplotlib.pyplot as plt
 import pandas as pd
-import seaborn as sns
 
+from visualization import histogram
+
+# TODO: hillclimber in if regels 24 tm 27 
+# TODO: kiezen welker algoritmes via command line [1h,2,3h,4,5], en hill aan of uit, default [1,2,3,4,5]
+# TODO: run algorithm nog hill meegeven
 
 def main(the_map, output_file, RUNS, visual):
     # Load data into the graph
     stations_graph = StationsGraph(f'data/Stations{the_map}.csv', f'data/Connecties{the_map}.csv')
     
     # Set up datafrom for visualization
-    plot_df = pd.DataFrame(columns=["Random", "NewRandom", "Greedy", "RandomGreedy", "AdaptedGreedy"])
-    # plot_df = pd.DataFrame(columns=["AdaptedGreedy", "HillClimber"])
+    plot_df = pd.DataFrame()
+
+    # ["AdaptedGreedy", "Greedy", "NewRandom", "RandomGreedy", "Random"]
 
     # -------------------------------------------------------- Random --------------------------------------------------------
-    random.seed()
-
     print(f"Random algorithm is running {RUNS} times...")
-    best_score_random = 0
-    scores_random = []
+    best_random, scores_random, all_random_graphs = run_algorithm("Random", stations_graph, the_map, RUNS, seed=None)
     
-    for _ in range(RUNS):
-        random_graph = randomize.random_assignment(stations_graph, the_map)
-
-        if random_graph.calculate_score() > best_score_random:
-            best_random = random_graph
-            best_score_random = random_graph.calculate_score()
-        
-        scores_random.append(random_graph.calculate_score())
-
-    print(f"Random completed successfully with a best score of {best_score_random} out of {RUNS} runs.")
-    print()
+    print(f"Random completed successfully with a best score of {best_random.calculate_score()} out of {RUNS} runs.", end="\n\n")
     
     plot_df["Random"] = pd.Series(scores_random).values
 
+    # print("HillClimber algorithm is running on Random...")
+    # best_hillclimber, scores_hillclimber_r = run_hill_climber(all_random_graphs, the_map)
+
+    # plot_df["RandomHill"] = pd.Series(scores_hillclimber_r).values
+    
     # ------------------------------------------------------- NewRandom ------------------------------------------------------
-    random.seed()
-
     print(f"NewRandom algorithm is running {RUNS} times...")
-    best_score_new_random = 0
-    scores_new_random = []
-
-    for _ in range(RUNS):
-        new_random = r2.NewRandom(stations_graph, the_map)
-        new_random.run()
-        
-        if new_random.graph.calculate_score() > best_score_new_random:
-            best_new_random = new_random
-            best_score_new_random = new_random.graph.calculate_score()
-
-        scores_new_random.append(new_random.graph.calculate_score())
-
-    print(f"NewRandom completed successfully with a best score of {best_score_new_random} out of {RUNS} runs.")
-    print()
+    best_new_random, scores_new_random, all_new_random_graphs = run_algorithm("NewRandom", stations_graph, the_map, RUNS, seed=None)
+    
+    print(f"NewRandom completed successfully with a best score of {best_new_random.calculate_score()} out of {RUNS} runs.", end="\n\n")
     
     plot_df["NewRandom"] = pd.Series(scores_new_random).values
+    
+    # print("HillClimber algorithm is running on NewRandom...")
+    # best_hillclimber, scores_hillclimber_nr = run_hill_climber(all_new_random_graphs, the_map, seed=None)
 
-
+    # plot_df["NewRandomHill"] = pd.Series(scores_hillclimber_nr).values
+    
     # -------------------------------------------------------- Greedy --------------------------------------------------------
-    random.seed()
-    
     print(f"Greedy algorithm is running {RUNS} times...")
-    best_score_greedy = 0
-    scores_greedy = []
+    best_greedy, scores_greedy, all_greedy_graphs = run_algorithm("Greedy", stations_graph, the_map, RUNS, seed=None)
     
-    for _ in range(RUNS):
-        greedy = gr.Greedy(stations_graph, the_map)
-        greedy.run()
-        
-        if greedy.graph.calculate_score() > best_score_greedy:
-            best_greedy = greedy
-            best_score_greedy = greedy.graph.calculate_score()
-        
-        scores_greedy.append(greedy.graph.calculate_score())
-    
-    print(f"Greedy completed successfully with a best score of {best_score_greedy} out of {RUNS} runs.")
-    print()
+    print(f"Greedy completed successfully with a best score of {best_greedy.calculate_score()} out of {RUNS} runs.", end="\n\n")
     
     plot_df["Greedy"] = pd.Series(scores_greedy).values
 
+    # print("HillClimber algorithm is running on Greedy...")
+    # best_hillclimber, scores_hillclimber_g = run_hill_climber(all_greedy_graphs, the_map, seed=None)
+
+    # plot_df["GreedyHill"] = pd.Series(scores_hillclimber_g).values
+    
     # ----------------------------------------------------- RandomGreedy -----------------------------------------------------
-    random.seed()
-    
     print(f"RandomGreedy algorithm is running {RUNS} times...")
-    best_score_random_greedy = 0
-    scores_random_greedy = []
+    best_random_greedy, scores_random_greedy, all_random_greedy_graphs = run_algorithm("RandomGreedy", stations_graph, the_map, RUNS, seed=None)
     
-    for _ in range(RUNS):
-        random_greedy = gr.RandomGreedy(stations_graph, the_map)
-        random_greedy.run()
-        
-        if random_greedy.graph.calculate_score() > best_score_random_greedy:
-            best_random_greedy = random_greedy
-            best_score_random_greedy = random_greedy.graph.calculate_score()
-        
-        scores_random_greedy.append(random_greedy.graph.calculate_score())
-    
-    print(f"RandomGreedy completed successfully with a best score of {best_score_random_greedy} out of {RUNS} runs.")
-    print()
+    print(f"RandomGreedy completed successfully with a best score of {best_random_greedy.calculate_score()} out of {RUNS} runs.", end="\n\n")
     
     plot_df["RandomGreedy"] = pd.Series(scores_random_greedy).values
 
-    # ----------------------------------------------------- ReverseGreedy ----------------------------------------------------
-    random.seed()
-    
-    print(f"ReverseGreedy algorithm is running {RUNS} times...")
-    best_score_reverse_greedy = 0
-    scores_reverse_greedy = []
-    
-    for _ in range(RUNS):
-        reverse_greedy = gr.ReverseGreedy(stations_graph, the_map)
-        reverse_greedy.run()
-        
-        if reverse_greedy.graph.calculate_score() > best_score_reverse_greedy:
-            best_reverse_greedy = reverse_greedy
-            best_score_reverse_greedy = reverse_greedy.graph.calculate_score()
-        
-        scores_reverse_greedy.append(reverse_greedy.graph.calculate_score())
-    
-    print(f"ReverseGreedy completed successfully with a best score of {best_score_reverse_greedy} out of {RUNS} runs.")
-    print()
+    # print("HillClimber algorithm is running on RandomGreedy...")
+    # best_hillclimber_rag, scores_hillclimber_rag = run_hill_climber(all_random_greedy_graphs, the_map, seed=None)
 
+    # plot_df["RandomGreedyHill"] = pd.Series(scores_hillclimber_rag).values
+    
+    # ----------------------------------------------------- ReverseGreedy ----------------------------------------------------
+    # print(f"ReverseGreedy algorithm is running {RUNS} times...")
+    # best_reverse_greedy, scores_reverse_greedy, all_reverse_greedy_graphs = run_algorithm("ReverseGreedy", stations_graph, the_map, RUNS, seed=None)
+    
+    # print(f"ReverseGreedy completed successfully with a best score of {best_reverse_greedy.calculate_score()} out of {RUNS} runs.", end="\n\n")
+    
+    # plot_df["ReverseGreedy"] = pd.Series(scores_reverse_greedy).values
+
+    # print("HillClimber algorithm is running on ReverseGreedy...")
+    # best_hillclimber_reg, scores_hillclimber_reg = run_hill_climber(all_reverse_greedy_graphs, the_map, seed=None)
+
+    # plot_df["ReverseGreedy"] = pd.Series(scores_hillclimber_reg).values
+    
     # ----------------------------------------------------- AdaptedGreedy ----------------------------------------------------
-    random.seed()
+    print(f"AdapatedGreedy algorithm is running {RUNS} times...")
+    best_adapted_greedy, scores_adapted_greedy, all_adapted_greedy_graphs = run_algorithm("AdaptedGreedy", stations_graph, the_map, RUNS, seed=None)
     
-    print(f"AdaptedGreedy algorithm is running {RUNS} times...")
-    best_score_adapted_greedy = 0
-    scores_adapted_greedy = []
-    all_adapted_greedy = []
-    
-    for _ in range(RUNS):
-        adapted_greedy = gr.AdaptedGreedy(stations_graph, the_map)
-        adapted_greedy.run()
-        
-        if adapted_greedy.graph.calculate_score() > best_score_adapted_greedy:
-            best_adapted_greedy = adapted_greedy
-            best_score_adapted_greedy = adapted_greedy.graph.calculate_score()
-        all_adapted_greedy.append(adapted_greedy.graph)
-        scores_adapted_greedy.append(adapted_greedy.graph.calculate_score())
-    
-    print(f"AdaptedGreedy completed successfully with a best score of {best_score_adapted_greedy} out of {RUNS} runs.")
-    print()
+    print(f"AdaptedGreedy completed successfully with a best score of {best_adapted_greedy.calculate_score()} out of {RUNS} runs.", end="\n\n")
     
     plot_df["AdaptedGreedy"] = pd.Series(scores_adapted_greedy).values
-
-    # ------------------------------------------------------ HillClimber -----------------------------------------------------
-    random.seed()
     
-    print("HillClimber algorithm is running ...")
-    scores_hillclimber = []
-    
-    for graph in all_adapted_greedy:
-        hillclimber = hc.HillClimber(graph, the_map)
-        hillclimber.run()
-        scores_hillclimber.append(hillclimber.graph.calculate_score())   
+    # print("HillClimber algorithm is running on AdaptedGreedy...")
+    # best_hillclimber_ag, scores_hillclimber_ag = run_hill_climber(all_adapted_greedy_graphs, the_map, seed=None)
 
-    print(f"HillClimber completed successfully with a score of {hillclimber.graph.calculate_score()}.")
-    print()
+    # plot_df["AdaptedGreedyHill"] = pd.Series(scores_hillclimber_ag).values
     
-    plot_df["HillClimber"] = pd.Series(scores_hillclimber).values
-
     # -------------------------------------------------------- Output --------------------------------------------------------
     
-    sns.set_theme()
-    sns.set_context("poster")
-    p = sns.histplot(data=plot_df, kde=True, bins=80)
-    p.set_title(f"AdaptedGreedy vs. HillClimber ({RUNS} runs) - National")
-    p.set_xlabel("Score")
-    
-    plt.show()
+    histogram("test", RUNS, the_map, hill=False)
     
     # Save graph to .csv file
-    generate_output(hillclimber.graph, output_file)
+    generate_output(best_adapted_greedy, output_file)
     print(f"See '{output_file}' for generated routes.")
 
     # Visualize results on map
@@ -186,7 +110,7 @@ def main(the_map, output_file, RUNS, visual):
         from visualization import visualization
 
         print("Loading visualization...")
-        visualization(the_map, hillclimber.graph)
+        visualization(the_map, best_adapted_greedy)
         print(f"Done! See '{the_map}_routes.png' for visualization.")
 
 
@@ -211,7 +135,7 @@ if __name__ == "__main__":
     parser.add_argument("the_map", choices=["Nationaal", "Holland"])
     parser.add_argument("output_file", help="output file (csv)")
     parser.add_argument("-N", help="Number of runs (default: 1)", type=int, default=1)
-    parser.add_argument("-V", help="Execute visualisation (default: True)", type=int, default=1, choices=[0, 1])
+    parser.add_argument("-V", help="Execute visualisation (default: True)", type=int, default=0, choices=[0, 1])
 
     # Read arguments from command line
     args = parser.parse_args()
