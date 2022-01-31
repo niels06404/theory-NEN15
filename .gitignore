@@ -130,13 +130,15 @@ dmypy.json
 
 # Personal (throwaway) files
 /*.txt
+
+/output/
 /output.csv
-/baseline.md
-/first_algorithm.md
-/second_algorithm.md
-/Voorbeeld_resultaat_random.png
-/Voorbeeld_resultaat_greedy.png
-/Voorbeeld_resultaat_hillclimber.png
+
+/*.md
+!README.md
+
+/*.png
+!/plots/
 
 # Profiling files
 /*.prof
