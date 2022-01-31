@@ -1,4 +1,3 @@
-
 import copy
 
 
@@ -69,6 +68,56 @@ def visualization(the_map, graph):
     plt.title(f'{the_map} Intercities')
     plt.legend(loc=2, fontsize=fonts)
     plt.savefig(f'plots/{the_map}_routes.png')
+
+
+def histogram(title, RUNS, the_map, hill=False):
+    import matplotlib.pyplot as plt
+    import pandas as pd
+    import seaborn as sns
+
+    plot_df = pd.DataFrame()
+    x = [] # NOTE: wat te doen als hill TRUE
+  
+    for algorithm in ["AdaptedGreedy", "Greedy", "NewRandom", "RandomGreedy", "Random"]:
+        with open(f"output/{algorithm}.csv", "r") as file:
+            if hill:
+                next(file)
+
+            for line in file:
+                line2 = line.split(";")
+                
+                list_items = line2[1].strip().split(",")
+                int_list_items = list(map(float, list_items))
+
+                x.append(max(int_list_items))
+                plot_df[line2[0]] = pd.Series(int_list_items).values
+                if not hill:
+                    break
+
+    sns.set_theme()
+    sns.set_context("poster")
+    p = sns.histplot(data=plot_df, kde=True, bins=80)
+    p.set_title(f"{title}") # NOTE: bij command line of als input title meegeven
+    p.set_xlabel("Score")
+    plt.xlim([1500, 7500]) # min(all.) - 200 # NOTE: geen goeie verhouding met holland
+    # plt.ylim([0, 2000]) # NOTE: af laten hangen van hoe groot RUNS is
+    # # plt.savefig("plots/test_random.png")
+    plt.show()
+
+    plt.clf()
+    
+    sns.set_context("talk")
+    
+    y = ["AdaptedGreedy", "Greedy", "NewRandom", "RandomGreedy", "Random"]
+    if hill:
+        y = ["AdaptedGreedyHill", "GreedyHill", "NewRandomHill", "RandomGreedyHill", "RandomHill"]
+
+    q = sns.barplot(x=x, y=y)
+    q.set_title(f"Best scores for different algorithms without hillclimber ({RUNS} runs) - {the_map}")
+    # q.set_title("Best scores for different algorithms without hillclimber (10000 runs) - {the_map}")
+    plt.xlim([0, 7500]) # NOTE: AFHANKELIJK VAN MAP
+    plt.savefig("plots/barplot.png")
+    plt.show()
 
 
 def cleanup_connections(connections):
