@@ -130,6 +130,7 @@ dmypy.json
 
 # Personal (throwaway) files
 /*.txt
+!/requirements.txt
 
 /output/
 /output.csv
