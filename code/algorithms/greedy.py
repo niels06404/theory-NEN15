@@ -1,12 +1,12 @@
-# import copy
-import pickle
+import copy
 import random
+from code.classes.station import Station
+from code.classes.stations_graph import StationsGraph
 
 
 class Greedy:
-    def __init__(self, input_graph, the_map):
-        # self.graph = copy.deepcopy(input_graph)
-        self.graph = pickle.loads(pickle.dumps(input_graph))
+    def __init__(self, input_graph: StationsGraph, the_map: str):
+        self.graph = copy.deepcopy(input_graph)
         self.map = the_map
         self.MAX_LENGTH = 20 if the_map == "Nationaal" else 7
         self.MAX_TIME = 180 if the_map == "Nationaal" else 120
@@ -17,8 +17,10 @@ class Greedy:
         '''
         unavailable_options = set()
         stations_passed_list = []
-        # Keep adding routes until max amount is reached or all stations are connected
-        while not len(self.graph.routes) >= self.MAX_LENGTH and len(self.graph.get_visited_connections()) < len(self.graph.connections):
+        length_connections = len(self.graph.connections)
+
+        # Keep adding routes until max amount is reached or all connections are made
+        while len(self.graph.routes) < self.MAX_LENGTH and len(self.graph.get_visited_connections()) < length_connections:
             starting_station = self.get_best_starting_station(stations_passed_list)
 
             self.graph.add_route(self.graph.stations[starting_station._name])
@@ -43,12 +45,12 @@ class Greedy:
                     unavailable_options = set()
                     break
 
-                # Possibilities: station names, possibilities1: station objects
-                possibilities1 = []
+                # Get the actual object instead of just the name
+                possibility_stations = []
                 for poss in possibilities:
-                    possibilities1.append(self.graph.stations[poss])
+                    possibility_stations.append(self.graph.stations[poss])
 
-                choice = self.get_best_station(possibilities1)
+                choice = self.get_best_station(possibility_stations)
 
                 route.add_station(self.graph.stations[choice._name], route.stations[-1]._connections[choice._name])
 
@@ -62,16 +64,16 @@ class Greedy:
 
                 unavailable_options = set()
 
-            # Check if the generated route is valid, if it is not remove the whole route
+            # Check if the generated route is valid, if it is not, remove the whole route
             if not route.is_valid(self.map):
                 self.graph.routes.popitem()
             elif route.is_valid(self.map):
                 self.graph.count_visited_connections(route.connections)
                 stations_passed_list = self.add_stations(stations_passed_list)
 
-    def add_stations(self, stations_passed_list):
+    def add_stations(self, stations_passed_list: list) -> list:
         '''
-        Adds all stations in the route to a list of passed stations.
+        Adds all stations in the route to a list of passed stations and returns this list.
         '''
         for station in self.graph.routes[list(self.graph.routes.keys())[-1]].stations:
             if station not in stations_passed_list:
@@ -79,7 +81,7 @@ class Greedy:
 
         return stations_passed_list
 
-    def get_best_station(self, possibilities):
+    def get_best_station(self, possibilities: list) -> Station:
         '''
         Returns the station with the least possible connections.
         '''
@@ -87,7 +89,7 @@ class Greedy:
 
         return possibilities[0]
 
-    def get_best_starting_station(self, stations_list):
+    def get_best_starting_station(self, stations_list: list) -> Station:
         '''
         Returns the starting station with the least possible connections. If all stations are visited at least once,
         return a random station which has one or more open connections.
@@ -105,18 +107,19 @@ class Greedy:
             # Return a random station with the fewest made connections
             new_dict = {}
             for connection in self.graph.connections:
-                new_dict[connection] = self.graph.connections[connection] + self.graph.connections[(connection[1], connection[0])]
+                new_dict[connection] = self.graph.connections[connection] + self.graph.connections[(connection[1],
+                                                                                                    connection[0])]
 
-            result = self.get_random_minimum(new_dict, lambda x: x[1])[0]
+            result = self.get_random_minimum(new_dict)[0]
             return self.graph.stations[result]
 
         return stations[0]
 
-    def get_random_minimum(self, dict_items, func):
+    def get_random_minimum(self, dict_items: dict) -> str:
         '''
         Returns a random key from a dictionary with a value equal to the minimum value in the dictionary.
         '''
-        minimum = min(dict_items.items(), key=func)[1]
+        minimum = min(dict_items.items(), key=lambda x: x[1])[1]
         keys = [k for k, v in dict_items.items() if v == minimum]
         keys.sort()
 
@@ -124,7 +127,7 @@ class Greedy:
 
 
 class RandomGreedy(Greedy):
-    def get_best_station(self, possibilities):
+    def get_best_station(self, possibilities: list) -> Station:
         '''
         Returns a random station from the possibilities.
         '''
@@ -132,7 +135,7 @@ class RandomGreedy(Greedy):
 
 
 class ReverseGreedy(Greedy):
-    def get_best_station(self, possibilities):
+    def get_best_station(self, possibilities: list) -> Station:
         '''
         Returns the station with the most possible connections.
         '''
@@ -142,7 +145,7 @@ class ReverseGreedy(Greedy):
 
 
 class AdaptedGreedy(Greedy):
-    def get_best_station(self, possibilities):
+    def get_best_station(self, possibilities: list) -> Station:
         '''
         Returns the station with the least number of possibilities while also preffering stations with the least number of
         connections made.
@@ -159,7 +162,6 @@ class AdaptedGreedy(Greedy):
             new_dict[connection[1]] = self.graph.connections[connection]
             new_dict[connection[1]] += self.graph.connections[(connection[1], connection[0])]
 
-        # Return station with the least amount of connections
-        result = self.get_random_minimum(new_dict, lambda x: x[1])
+        result = self.get_random_minimum(new_dict)
 
         return self.graph.stations[result]

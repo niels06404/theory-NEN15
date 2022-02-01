@@ -5,40 +5,40 @@ from .station import Station
 
 
 class StationsGraph():
-    def __init__(self, stations_file, connections_file):
+    def __init__(self, stations_file: str, connections_file: str):
         self.stations = self.load_stations(stations_file)
         self.connections = self.load_connections(connections_file)
-        self.routes = {}
+        self.routes: dict[str, Route] = {}
 
-    def load_stations(self, input_file):
+    def load_stations(self, input_file: str) -> dict:
         '''
         Loads all the stations into the graph.
         '''
-        with open(input_file, 'r') as file:
+        with open(input_file, "r") as file:
             # Skip header line
             next(file)
 
-            # Add station information to dictionary
             stations = {}
 
+            # Add station information to dictionary
             for line in file:
-                x = line.strip().split(',')
+                x = line.strip().split(",")
                 stations[x[0]] = Station(x[0], float(x[1]), float(x[2]))
 
         return stations
 
-    def load_connections(self, input_file):
+    def load_connections(self, input_file: str) -> dict:
         '''
         Loads all the connections into the stations.
         '''
         connections_all = {}
-        with open(input_file, 'r') as file:
+        with open(input_file, "r") as file:
             # Skip header line
             next(file)
 
             # Add connections to stations
             for line in file:
-                x = line.strip().split(',')
+                x = line.strip().split(",")
 
                 # Add connections to Station class
                 self.stations[x[0]].add_connection(x[1], float(x[2]))
@@ -50,7 +50,7 @@ class StationsGraph():
 
         return connections_all
 
-    def is_solution(self, the_map):
+    def is_solution(self, the_map: str) -> bool:
         '''
         Returns True if the graph is a possible solution. False otherwise.
         '''
@@ -66,7 +66,7 @@ class StationsGraph():
 
         return True
 
-    def add_route(self, starting_station):
+    def add_route(self, starting_station: Station):
         '''
         Creates a new route with the given starting station.
         '''
@@ -75,11 +75,11 @@ class StationsGraph():
         else:
             self.routes[starting_station._name + f"{uuid.uuid1()}"] = Route(starting_station)
 
-    def get_visited_connections(self):
+    def get_visited_connections(self) -> set:
         '''
         Returns a set of all made connections for all the routes.
         '''
-        connections = set()
+        connections: set[tuple[str, str]] = set()
         for route in self.routes:
             connections = connections.union(self.routes[route].connections)
 
@@ -91,20 +91,20 @@ class StationsGraph():
 
         return connections
 
-    def get_unused_connections(self):
+    def get_unused_connections(self) -> list:
         '''
         Returns all connections that have not been used yet.
         '''
         return list(set(self.connections.keys()) - self.get_visited_connections())
 
-    def count_visited_connections(self, connections_route):
+    def count_visited_connections(self, connections_route: set):
         '''
-        Returns the how many times each connection has been made.
+        Counts how many times each connection has been made.
         '''
         for connection in connections_route:
             self.connections[connection] += 1
 
-    def calculate_score(self):
+    def calculate_score(self) -> float:
         '''
         Calculates the score of the result bases on a given formula: K = p * 10000 - (T * 100 + Min).
         In which K is the quality of the generated routes, p the fraction of the used connections, T the number of routes and
@@ -112,7 +112,7 @@ class StationsGraph():
         '''
         p = len(self.get_visited_connections()) / len(self.connections)
         t = len(self.routes)
-        m = 0
+        m = 0.0
         for route in self.routes:
             m += self.routes[route].time
 

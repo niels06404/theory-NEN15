@@ -1,15 +1,17 @@
-class Route():
-    def __init__(self, starting_station):
-        self.stations = [starting_station]
-        self.time = 0
-        self.connections = set()
+from code.classes.station import Station
 
-    def is_valid(self, the_map):
+
+class Route():
+    def __init__(self, starting_station: Station):
+        self.stations = [starting_station]
+        self.time = 0.0
+        self.connections: set[tuple[str, str]] = set()
+
+    def is_valid(self, the_map: str) -> bool:
         '''
         Returns True if the route is valid according to the given restrictions.
         False otherwise.
         '''
-
         if the_map == "Nationaal":
             MAX_TIME = 180
         else:
@@ -30,7 +32,7 @@ class Route():
 
         return True
 
-    def add_station(self, station, time):
+    def add_station(self, station: Station, time: float):
         '''
         Adds a new station to the route.
         '''
@@ -46,7 +48,7 @@ class Route():
         self.time -= self.stations[-2]._connections[self.stations[-1]._name]
         self.stations.pop()
 
-    def get_possibilities(self, unavailable_connections):
+    def get_possibilities(self, unavailable_connections: set) -> list:
         '''
         Returns a list of possibilities to where a connection can be made.
         '''

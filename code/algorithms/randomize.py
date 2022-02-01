@@ -1,22 +1,23 @@
-# import copy
-import pickle
+import copy
 import random
+from code.classes.station import Station
+from code.classes.stations_graph import StationsGraph
 
 
 class Random:
-    def __init__(self, input_graph, the_map):
-        # self.graph = copy.deepcopy(input_graph)
-        self.graph = pickle.loads(pickle.dumps(input_graph))
+    def __init__(self, input_graph: StationsGraph, the_map: str):
+        self.graph = copy.deepcopy(input_graph)
         self.map = the_map
         self.MAX_LENGTH = 20 if the_map == "Nationaal" else 7
         self.MAX_TIME = 180 if the_map == "Nationaal" else 120
-    
+
     def run(self):
         '''
         Executes the algorithm.
         '''
         unavailable_options = set()
-        while not len(self.graph.routes) >= self.MAX_LENGTH and len(self.graph.get_visited_connections()) < len(self.graph.connections):
+        length_connections = len(self.graph.connections)
+        while len(self.graph.routes) < self.MAX_LENGTH and len(self.graph.get_visited_connections()) < length_connections:
             starting_station = self.get_starting_station()
 
             # Create a new route with starting station
@@ -50,8 +51,8 @@ class Random:
                 del self.graph.routes[key]
             elif route.is_valid(self.map):
                 self.graph.count_visited_connections(route.connections)
-    
-    def get_starting_station(self):
+
+    def get_starting_station(self) -> Station:
         '''
         Returns a random starting station
         '''
@@ -59,7 +60,7 @@ class Random:
 
 
 class NewRandom(Random):
-    def get_starting_station(self):
+    def get_starting_station(self) -> Station:
         '''
         Returns a station from a connection with the least number of connections made.
         '''
@@ -67,5 +68,5 @@ class NewRandom(Random):
         possibility = random.choice(possibilities)
         while self.graph.connections[(possibility[1], possibility[0])] != 0:
             possibility = random.choice(possibilities)
-        
+
         return random.choice(possibility)
