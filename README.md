@@ -25,7 +25,7 @@ AdaptedGreedy is een variatie op Greedy. Hier is voor gekozen, omdat op deze man
 Voordat we tot AdaptedGreedy zijn gekomen zijn daar veel stappen en andere varianten van dit algoritme aan vooraf gegaan. De overeenkomst tussen deze algoritmes is dat zij allemaal het startstation op dezelfde manier bepalen. Het verschil in deze algoritmes is dat zij allemaal op een net even andere manier een vervolgconnectie kiezen. Zo wordt bij Greedy de connectie gekozen met het minst aantal vervolgconnecties, omdat deze connectie moeilijk is om aan een route toe te voegen. Bij ReverseGreedy is dit precies omgedraaid: de connectie met het meest aantal vervolgconnecties wordt gekozen, omdat dit zorgt voor veel mogelijkheden voor de vervolgroute. Bij het RandomGreedy algoritme wordt er random een connectie gekozen. Uiteindelijk heeft AdaptedGreedy tot de beste resultaten geleid en hebben we voor dit algoritme gekozen.
 
 ## HillClimber
-Er is voor een HillClimber algoritme gekozen, omdat dit een iteratief algoritme is en dus significant anders dan ons eerste algoritme. Aan de HillClimber wordt een geldige oplossing meegegeven. Dit kan een oplossing zijn geproduceerd door het Random algoritme, of AdaptedGreedy algoritme. Als er geen geldige oplossing wordt meegegeven, krijgt de gebruiker een foutmelding.
+Er is voor een HillClimber algoritme gekozen, omdat dit een iteratief algoritme is en dus significant anders is dan ons eerste algoritme. Aan de HillClimber wordt een geldige oplossing meegegeven. Dit kan een oplossing zijn geproduceerd door bijvoorbeeld het Random algoritme, of AdaptedGreedy algoritme <font color="red">Nog de andere algoritmes toevoegen</font>. Als er geen geldige oplossing wordt meegegeven, krijgt de gebruiker een foutmelding.
 
 Als eerste stap wordt er een random route gekozen en bij deze route wordt er gekeken of de score verbeterd als het laatste station wordt verwijderd. Als de score verbeterd, dan wordt dit station met bijbehorende connectie verwijderd in deze route. Als de score niet verbeterd, wordt 
 de route teruggezet naar hoe deze eerst was en kan deze route niet meer opnieuw worden gekozen. Er wordt steeds random een nieuwe route gekozen, totdat er geen routes meer over zijn. Een route die een verbetering geeft bij het verwijderen van het laatste station, zal dus altijd nog een keer gekozen worden.
@@ -34,9 +34,14 @@ In de tweede stap wordt er steeds random een route gekozen en wordt er gekeken o
 
 Als derde wordt er gekeken of twee verschillende routes samengevoegd kunnen worden. Als dit mogelijk is, dan wordt dit gedaan als hierdoor de score verbeterd en als de maximale route tijd niet wordt overschreven.
 
-Als laatste stap wordt er gekeken of de nog ongebruikte connecties (als die er zijn), aan het einde van een route kunnen worden toegevoegd. Alle ongebruikte connecties worden afgegaan en per ongebruikte connectie worden alle routes afgegaan om te kijken of deze connectie aan een route kan worden toegevoegd. Als het mogelijk is om de connectie aan de route toe te voegen dan wordt dit gedaan als de score daardoor verbeterd, de maximale route tijd niet wordt overschreven en het station nog niet eerder in de route is voorgekomen.
+Als laatste stap wordt er gekeken of de nog ongebruikte connecties (als die er zijn), aan het einde van een route kunnen worden toegevoegd. Alle ongebruikte connecties worden afgegaan en per ongebruikte connectie worden alle routes afgegaan om te kijken of deze connectie aan een route kan worden toegevoegd. Als het mogelijk is om de connectie aan de route toe te voegen dan wordt dit gedaan als de score daardoor verbeterd, de maximale tijd vab de route niet wordt overschreven en het station nog niet eerder in de route is voorgekomen.
 
 # Resultaten
+Het resultaat is een output.csv met daarin de trajecten en de score van de doelfunctie. Dit resultaat wordt weergegeven in een kaart, hierop zijn de verschillende trajecten getekend met verschillende kleuren. De ongebruikte connecties zijn zwarte stippellijnen.
+
+Voorbeeld output.csv:
+
+Voorbeeld kaart:
 
 Regel code waarmee je dit resultaat kan krijgen
 
@@ -57,3 +62,35 @@ Regel code waarmee je dit resultaat kan krijgen
 *plaatje waarin per algoritme twee staafdiagrammen te zien zijn met hoogste score en gemiddelde score na ... runs*
 
 tekst met uitleg, vergelijkingen maken
+
+# Aan de slag
+
+## Vereisten
+```
+pip install -r requirements.txt
+```
+
+ook nog basemap package staat (nog) niet in requirements
+
+## Gebruik
+```
+python main.py
+```
+
+10000 Runs is +/- 30 minuten (1 algoritme (bv. 1h))
+
+## Structuur
+https://github.com/Miloceane/radio_russia_demo
+De hierop volgende lijst beschrijft de belangrijkste mappen en files in het project, en waar je ze kan vinden:
+
+- **/code**: bevat alle code van dit project
+  - **/code/algorithms**: bevat de code voor algoritmes
+  - **/code/classes**: bevat de drie benodigde classes voor deze case
+  - **/code/visualisation**: bevat de bokeh code voor de visualisatie DIT KLOPT NIET BIJ ONS
+- **/data**: bevat de verschillende databestanden die nodig zijn om de graaf te vullen en te visualiseren
+- **/plots**: bevat de plots van de gerunde algoritmes ?????
+
+# Auteurs
+- Niels Schröder
+- Esmeé van der Klis
+- Nienke van den Hurk
