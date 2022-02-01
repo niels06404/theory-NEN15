@@ -80,7 +80,6 @@ python main.py
 10000 Runs is +/- 30 minuten (1 algoritme (bv. 1h))
 
 ## Structuur
-https://github.com/Miloceane/radio_russia_demo
 De hierop volgende lijst beschrijft de belangrijkste mappen en files in het project, en waar je ze kan vinden:
 
 - **/code**: bevat alle code van dit project
