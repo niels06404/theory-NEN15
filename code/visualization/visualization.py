@@ -1,9 +1,9 @@
 import copy
 
 
-def visualization(the_map, graph):
-    import matplotlib.pyplot as plt
-    from mpl_toolkits.basemap import Basemap
+def visualization(the_map, graph, algorithm):
+    import matplotlib.pyplot as plt  # type: ignore
+    from mpl_toolkits.basemap import Basemap  # type: ignore
 
     if the_map == "Nationaal":
         fonts = "xx-small"
@@ -11,23 +11,23 @@ def visualization(the_map, graph):
                "#172a3a", "#8c93a8", "#a9f8fb", "#f0c808", "#96e6b3", "#f51aa4", "#561d25", "#ff3864", "#ffdab9", "#72b01d"]
         linew = [2 for _ in range(20)]
 
-        m = Basemap(projection='mill',
+        m = Basemap(projection="mill",
                     llcrnrlat=50.7,
                     llcrnrlon=3.2,
                     urcrnrlat=53.6,
                     urcrnrlon=7.3,
-                    resolution='h')
+                    resolution="h")
     else:
         fonts = "medium"
         col = ["#979af0", "#C20208", "#69CC66", "#3a3d91", "#ded837", "#a7dbda", "#BF1BC4"]
         linew = [6, 5.2, 4.4, 3.6, 2.8, 2, 1.2]
 
-        m = Basemap(projection='mill',
+        m = Basemap(projection="mill",
                     llcrnrlat=51.7,
                     llcrnrlon=4,
                     urcrnrlat=53.1,
                     urcrnrlon=5.3,
-                    resolution='h')
+                    resolution="h")
 
     m.drawcoastlines(linewidth=0.5)
     m.drawcountries()
@@ -50,7 +50,7 @@ def visualization(the_map, graph):
     for connection in unused_connections:
         xs_uc = []
         ys_uc = []
-        # for station in connection:
+
         xs_uc.append(graph.stations[connection[0]]._x)
         ys_uc.append(graph.stations[connection[0]]._y)
         xs_uc.append(graph.stations[connection[1]]._x)
@@ -65,19 +65,21 @@ def visualization(the_map, graph):
         xpt_s, ypt_s = m(lon_s, lat_s)
         m.plot(xpt_s, ypt_s, "ro", markersize=2)
 
-    plt.title(f'{the_map} Intercities')
+    plt.title(f"{algorithm} Intercities - {the_map}")
     plt.legend(loc=2, fontsize=fonts)
-    plt.savefig(f'plots/{the_map}_routes.png')
+    plt.savefig(f"plots/{the_map}_{algorithm}_routes.png")
+
+    plt.clf()
 
 
-def histogram(title, RUNS, the_map, hill=False):
+def histogram(title: str, output_file: str, xlim: list, ylim: list, hill: bool = False, barplot: bool = False):
     import matplotlib.pyplot as plt
-    import pandas as pd
-    import seaborn as sns
+    import pandas as pd  # type: ignore
+    import seaborn as sns  # type: ignore
 
     plot_df = pd.DataFrame()
-    x = [] # NOTE: wat te doen als hill TRUE
-  
+    x = []
+
     for algorithm in ["AdaptedGreedy", "Greedy", "NewRandom", "RandomGreedy", "Random"]:
         with open(f"output/{algorithm}.csv", "r") as file:
             if hill:
@@ -85,7 +87,7 @@ def histogram(title, RUNS, the_map, hill=False):
 
             for line in file:
                 line2 = line.split(";")
-                
+
                 list_items = line2[1].strip().split(",")
                 int_list_items = list(map(float, list_items))
 
@@ -95,29 +97,32 @@ def histogram(title, RUNS, the_map, hill=False):
                     break
 
     sns.set_theme()
-    sns.set_context("poster")
-    p = sns.histplot(data=plot_df, kde=True, bins=80)
-    p.set_title(f"{title}") # NOTE: bij command line of als input title meegeven
-    p.set_xlabel("Score")
-    plt.xlim([1500, 7500]) # min(all.) - 200 # NOTE: geen goeie verhouding met holland
-    # plt.ylim([0, 2000]) # NOTE: af laten hangen van hoe groot RUNS is
-    # # plt.savefig("plots/test_random.png")
-    plt.show()
+    sns.set(rc={"figure.figsize":(18, 12)})
+
+    if barplot:
+        sns.set_context("talk")
+
+        y = ["AdaptedGreedy", "Greedy", "NewRandom", "RandomGreedy", "Random"]
+
+        if hill:
+            y = ["AdaptedGreedyHill", "GreedyHill", "NewRandomHill", "RandomGreedyHill", "RandomHill"]
+
+        q = sns.barplot(x=x, y=y)
+        q.set_title(title)
+        q.set_label("Score")
+        plt.xlim(xlim)
+        plt.savefig(output_file, dpi=100)
+    else:
+        sns.set_context("poster")
+        p = sns.histplot(data=plot_df, kde=True, bins=80)
+        p.set_title(f"{title}")
+        p.set_xlabel("Score")
+        plt.xlim(xlim)
+        plt.ylim(ylim)
+
+        plt.savefig(output_file)
 
     plt.clf()
-    
-    sns.set_context("talk")
-    
-    y = ["AdaptedGreedy", "Greedy", "NewRandom", "RandomGreedy", "Random"]
-    if hill:
-        y = ["AdaptedGreedyHill", "GreedyHill", "NewRandomHill", "RandomGreedyHill", "RandomHill"]
-
-    q = sns.barplot(x=x, y=y)
-    q.set_title(f"Best scores for different algorithms without hillclimber ({RUNS} runs) - {the_map}")
-    # q.set_title("Best scores for different algorithms without hillclimber (10000 runs) - {the_map}")
-    plt.xlim([0, 7500]) # NOTE: AFHANKELIJK VAN MAP
-    plt.savefig("plots/barplot.png")
-    plt.show()
 
 
 def cleanup_connections(connections):
