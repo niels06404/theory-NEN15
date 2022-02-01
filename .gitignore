@@ -132,14 +132,16 @@ dmypy.json
 /*.txt
 !/requirements.txt
 
-/output/
+/output/*.csv
 /output.csv
 
 /*.md
 !README.md
 
-/*.png
-!/plots/
+*.png
+!/plots/Example_routes.png
+
+/*.pdf
 
 # Profiling files
 /*.prof
