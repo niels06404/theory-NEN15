@@ -8,6 +8,42 @@ Doelfunctie: K = p × 10000 − (T × 100 + Min)
 
 Hierin is p de fractie van de gebruikte connecties (aantal gebruikte connecties / totaal aantal connecties) , T het aantal trajecten en Min het aantal minuten in alle trajecten samen.
 
+# Aan de slag
+
+## Vereisten
+```
+pip install -r requirements.txt
+```
+
+Voor het plotten van de kaarten is een extra package nodig. De code werkt ook zonder onderstaande package.
+```
+pip install basemap basemap-data basemap-data-hires
+```
+
+## Gebruik
+```
+python main.py map [-N] [-V] [-a] [-s]
+```
+```map``` str; voor welke data trajecten gegenereerd moeten worden; keuze: [Nationaal, Holland]  
+Optioneel:  
+```-N``` int, het aantal runs (default: 1)  
+```-V``` int; of er een kaart geplot moet worden met de gegenereerde trajecten; keuze: [0, 1] (default: 0)  
+```-a``` str; welke algoritmes gerund moeten worden; (default: 5,1)  
+```-s``` int; de random seed waarmee algoritmes moeten werken; (default=None)  
+
+**N.B.:** De input van ```-a``` is een door komma's gesplitste combinatie van de cijfers 1 tot en met 5 en de letter 'h'. De cijfers corresponderen met de mogelijke algoritmes die uitgevoerd kunnen worden op de data. Door een 'h' toe te voegen aan het cijfer, zal het programma ook de HillClimber toepassen op dit algoritme.
+
+Hieronder is te zien welk cijfer bij welk algoritme hoort:  
+1. AdaptedGreedy  
+2. Greedy
+3. NewRandom
+4. RandomGreedy
+5. Random
+
+Wanneer de algoritmes Greedy, RandomGreedy en Random gerund moeten worden en bij de Greedy is ook de HillClimber gewenst is, is de input dus ```-a 2h,4,5```.
+
+**Let op:** Het genereren van oplossingen met de HillClimber kan bij grote aantallen runs erg lang duren.
+
 # Algoritmen
 
 ## Random
@@ -37,43 +73,7 @@ NewRandom werkt over het algemeen hetzelfde als Random en is dus ook niet helema
 Alle Greedy algoritmes kiezen het startstation op dezelfde manier. Het verschil zit in het kiezen van de connecties voor de rest van het traject.
 De Greedy kiest de connectie met het minst aantal mogelijke vervolgconnecties. RandomGreedy kiest random een connectie.
 
-# Aan de slag
-
-## Vereisten
-```
-pip install -r requirements.txt
-```
-
-Voor het plotten van de kaarten is een extra package nodig. De code werkt ook zonder onderstaande package.
-```
-pip install basemap basemap-data basemap-data-hires
-```
-
-## Gebruik
-```
-python main.py map [-N] [-V] [-a] [-s]
-```
-```map```: str; voor welke data trajecten gegenereerd moeten worden; keuze: [Nationaal, Holland]  
-Optioneel:  
-```-N```: int, het aantal runs (default: 1)  
-```-V```: int; of er een kaart geplot moet worden met de gegenereerde trajecten; keuze: [0, 1] (default: 0)  
-```-a```: str; welke algoritmes gerund moeten worden; (default: 5,1)  
-```-s```: int; de random seed waarmee algoritmes moeten werken; (default=None)  
-
-**N.B.:** De input van ```-a``` is een door komma's gesplitste combinatie van de cijfers 1 tot en met 5 en de letter 'h'. De cijfers corresponderen met de mogelijke algoritmes die uitgevoerd kunnen worden op de data. Door een 'h' toe te voegen aan het cijfer, zal het programma ook de HillClimber toepassen op dit algoritme.
-
-Hieronder is te zien welk cijfer bij welk algoritme hoort:  
-1. AdaptedGreedy  
-2. Greedy
-3. NewRandom
-4. RandomGreedy
-5. Random
-
-Wanneer de algoritmes Greedy, RandomGreedy en Random gerund moeten worden en bij de Greedy is ook de HillClimber gewenst is, is de input dus ```-a 2h,4,5```.
-
-**Let op:** Het genereren van oplossingen met de HillClimber kan bij grote aantallen runs erg lang duren.
-
-## Resultaten
+# Resultaten
 Het resultaat is een output.csv met daarin de trajecten en de score van de doelfunctie. Dit resultaat wordt weergegeven in een kaart, hierop zijn de verschillende trajecten getekend met verschillende kleuren. De ongebruikte connecties zijn zwarte stippellijnen.
 
 <p align="center">
@@ -82,7 +82,7 @@ Voorbeeld kaart:<br>
 </p>
 
 
-## Structuur
+# Structuur
 De hierop volgende lijst beschrijft de belangrijkste mappen en files in het project, en waar deze te vinden zijn:
 
 - **/code**: bevat alle code van dit project
