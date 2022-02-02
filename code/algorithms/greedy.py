@@ -134,16 +134,6 @@ class RandomGreedy(Greedy):
         return random.choice(possibilities)
 
 
-class ReverseGreedy(Greedy):
-    def get_best_station(self, possibilities: list) -> Station:
-        '''
-        Returns the station with the most possible connections.
-        '''
-        possibilities.sort(key=lambda station: len(station._connections), reverse=True)
-
-        return possibilities[0]
-
-
 class AdaptedGreedy(Greedy):
     def get_best_station(self, possibilities: list) -> Station:
         '''
