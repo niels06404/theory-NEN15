@@ -1,7 +1,8 @@
 from visualization import histogram
 
 # The results depend on the input data in the folder "output". This data should be generated first by running main.py.
-# To get the exact same results as in the presentation, run: ... (seed = 77965460 dinsdag 1 feb 10000 runs, nationaal)
+# To get the exact same results as in the presentation, run: python3 main.py Nationaal -N 10000 -a 1h,2h,3h,4h,5h -s 77965460
+# To save time, use 5 different terminals to run each algorithm simultaneously by only providing the program one algorithm per terminal.
 
 # Visual Nationaal without HillClimber, 10000 runs
 histogram("Score distribution of different algorithms, without HillClimber, 10000 runs - Nationaal",

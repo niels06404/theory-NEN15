@@ -12,7 +12,7 @@ def visualization(the_map: str, graph: StationsGraph, algorithm: str):
         fonts = "xx-small"
         col = ["#a8d5e2", "#f9a620", "#ffd449", "#548c2f", "#104911", "#c84630", "#00916e", "#a4036f", "#7a6c5d", "#19297c",
                "#172a3a", "#8c93a8", "#a9f8fb", "#f0c808", "#96e6b3", "#f51aa4", "#561d25", "#ff3864", "#ffdab9", "#72b01d"]
-        linew = [2 for _ in range(20)]
+        linew = [2.0 for _ in range(20)]
 
         m = Basemap(projection="mill",
                     llcrnrlat=50.7,
@@ -131,7 +131,7 @@ def histogram(title: str, output_file: str, xlim: list, ylim: list, hill: bool =
     plt.clf()
 
 
-def cleanup_connections(connections: set[tuple[str, str]]) -> set[tuple[str, str]]:
+def cleanup_connections(connections: list) -> list:
     '''
     Removes all duplicate connections which are reversed.
     Returns a set of one-way connections.
