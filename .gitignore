@@ -128,12 +128,15 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+
+# Profiling files
+/*.prof
+
 # Personal (throwaway) files
 /*.txt
 !/requirements.txt
 
-/output/*.csv
-/output.csv
+/*.pdf
 
 /*.md
 !README.md
@@ -141,7 +144,6 @@ dmypy.json
 *.png
 !/plots/Example_routes.png
 
-/*.pdf
-
-# Profiling files
-/*.prof
+# Program generated files
+/output/*.csv
+/output.csv
