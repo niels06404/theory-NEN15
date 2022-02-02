@@ -6,6 +6,10 @@ from code.algorithms import randomize as ra
 
 
 def run_algorithm(algorithm, graph, the_map, RUNS, hill=False, seed=None):
+    '''
+    Runs the given algorithm.
+    Returns best results, all scores and all graphs of the given algorithm.
+    '''
     random.seed(seed)
 
     best_score = 0
@@ -63,6 +67,10 @@ def run_algorithm(algorithm, graph, the_map, RUNS, hill=False, seed=None):
 
 
 def run_hillclimber(graphs, the_map, seed=None):
+    '''
+    Runs the HillClimber algorithm on an already completed graph.
+    Returns best result and all scores of the HillClimber.
+    '''
     random.seed(seed)
 
     best_score = 0

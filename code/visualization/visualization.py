@@ -1,7 +1,10 @@
 import copy
+from ..classes.stations_graph import StationsGraph
 
-
-def visualization(the_map, graph, algorithm):
+def visualization(the_map: str, graph: StationsGraph, algorithm: str):
+    '''
+    Plots all the generated routes of an algorithm on a map.
+    '''
     import matplotlib.pyplot as plt  # type: ignore
     from mpl_toolkits.basemap import Basemap  # type: ignore
 
@@ -73,6 +76,9 @@ def visualization(the_map, graph, algorithm):
 
 
 def histogram(title: str, output_file: str, xlim: list, ylim: list, hill: bool = False, barplot: bool = False):
+    '''
+    Plots histogram or barplot of an algorithm.
+    '''
     import matplotlib.pyplot as plt
     import pandas as pd  # type: ignore
     import seaborn as sns  # type: ignore
@@ -125,7 +131,11 @@ def histogram(title: str, output_file: str, xlim: list, ylim: list, hill: bool =
     plt.clf()
 
 
-def cleanup_connections(connections):
+def cleanup_connections(connections: set[tuple[str, str]]) -> set[tuple[str, str]]:
+    '''
+    Removes all duplicate connections which are reversed.
+    Returns a set of one-way connections.
+    '''
     connections1 = copy.deepcopy(connections)
     for connection in connections:
         if (connection[1], connection[0]) in connections1:
